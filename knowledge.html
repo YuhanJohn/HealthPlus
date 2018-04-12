@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2011 Google Inc. All Rights Reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+  <head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>健康促進APP</title>
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/jquery.mobile-1.1.0.min.js"></script>
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script>$(document).bind("mobileinit", function(){    
+  $.extend(  $.mobile , {    
+   defaultPageTransition: 'none'    
+  });    
+}); 
+</script>
+	<style type="text/css">
+.ui-page {
+    background: transparent url(back.jpg);
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+
+
+}
+		
+		</style>
+  </head>
+  
+  <body>
+  <div data-role="page" id="page1">
+
+	<div data-role="header" data-theme="b">
+		<a href="index.html" rel="external" data-theme="b" abcde"home">Home</a>
+		<h1>疾病常識</h1>
+	</div><!-- /header -->
+
+	<div data-role="content" >	
+		<div>
+			<a href="#page2" data-theme="b" data-role="button">糖尿病常識</a>
+			<a href="#page3" data-theme="b" data-role="button">高血壓常識</a>
+			<a href="#page4" data-theme="b" data-role="button">肥胖常識</a>
+			<a href="#page5" data-theme="b" data-role="button">肌膚老化常識</a>
+			<!-- <a href="" id="123" value="1" data-role="button" onclick="showINS('123')">test</a> -->
+		</div>
+	</div>
+</div><!-- /page -->
+      
+ <div data-role="page" id="page2">
+
+	<div data-role="header" data-theme="b">
+		<a href="index.html" rel="external" data-theme="b" abcde"home">Home</a>
+		<h1>糖尿病常識</h1>
+	</div><!-- /header -->
+	
+    <div data-role="content">
+    <section>
+		<table align="center">
+			<tr>
+				<td>
+				<FONT COLOR="#0000FF"><B>糖尿病介紹:</B></FONT><br>糖尿病是一種因體內胰島素絕對或者相對不足所導致的一系列臨床綜合症，與遺傳基因有著非常密切的關聯。糖尿病的主要臨床表現為多飲、多尿、多食和體重下降，以及血糖高、尿液中含有葡萄糖等。
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<br><FONT COLOR="#0000FF"><B>併發症:</B></FONT>
+					<ul>
+								<li>大血管病變:<br>腦、心臟、足部等動脈硬化，會造成腦中風、心肌梗塞和足部病變。</li>
+								<li>小血管病變:<br>(1) 眼睛:視網膜病變、黃斑部水腫，加重白內障、青光眼。
+												<br>(2) 腎臟:蛋白尿、慢性腎衰竭、尿毒症
+												<br>(3) 神經:自主神經及周邊神經病變</li>
+								<li>口腔疾病等機率較一般人高</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+	</section>		
+    </div>
+
+</div> 
+
+
+ <div data-role="page" id="page3">
+
+	<div data-role="header" data-theme="b">
+		<a href="index.html" rel="external" data-theme="b" abcde"home">Home</a>
+		<h1>高血壓常識</h1>
+	</div><!-- /header -->
+	
+    <div data-role="content">
+    <section>
+		<table align="center">
+			<tr>
+				<td>
+				<FONT COLOR="#0000FF"><B>高血壓介紹:</B></FONT><br>高血壓是持續血壓過高的疾病，會引起中風、心臟病、血管瘤、腎衰竭等疾病。
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<br><FONT COLOR="#0000FF"><B>併發症:</B></FONT>
+					<ul>
+									一. 阻塞作用<li>心臟：心絞痛、冠狀動脈血栓症或心肌梗塞等。</li>
+													<li>主動脈：動脈瘤。這些腫瘤血塊可能分離成血栓,流入通往腎臟或大腿的動脈,阻礙腎臟或腿部的血液循環。</li>
+													<li>腿與腳：身體下半部或大腿動脈部份阻塞,則患者在爬坡時小腿會感到疼痛。若腿部動脈完全阻塞,則會引起腳趾或腳掌生壞疽。</li>
+													<li>眼睛：眼部動脈栓塞現象﹑眼部靜脈阻塞或視網膜剥離等症狀。</li>
+													<li>其他器官：身體其他器官的血液供輸量都可能因高血壓所造成的血管阻塞而減低,甚至完全停止。</li>
+								<br>二.破裂效應<li>心臟：血壓升高會大大增加心臟的負擔,所以心臟很難將血液打入動脈。最後,如果左心室輸出血液的速度突然無法趕上血液由右心室流回肺部的速度,就會導致嚴重的心臟衰竭,這種類型的心臟衰竭並非真的由破裂效應所造成但過程相似。</li>
+													<li>主動脈：主動脈可能產生動脈瘤。如果血壓非常高,且動脈瘤壁很脆弱的時候,動脈瘤就可能破裂。動脈瘤破裂通常分成兩個階段:第一階段,動脈內膜組織裂開,血液湧入主動脈壁的中層組織中;此時會有劇烈的胸部疼痛,因此容易被誤診為冠狀動脈性心臟病發作。第二個階段是主動脈壁的外層破裂,數秒內或數分鐘內即會致命。</li>
+													<li>腦部：腦部的動脈瘤是指在動脈血管壁上形成的泡泡狀小血瘤,產生的原因包括天生血管壁較脆弱,或高血壓使正常的血管壁膨脹所致;發生的部位包括腦部表面(通常為先天型的血管瘤)或在腦的內部(一般為高血壓所引起的血管瘤)。 如果腦部表面的動脈瘤破裂,血液會流入腦脊髓中,稱為蛛網膜下出血,患者會覺得頭痛得厲害,不過不會立即失去意識或中風。破裂的是腦內動脈瘤(腦內出血),會破壞腦組織的一部份,有時候會失去意識,會立即或在一.二個小時之內發展成身體半邊癱瘓的中風,也就是半身不遂。</li>
+													<li>眼睛：血壓非常高的時候且沒有於數小時之內下降,則視網膜的小動脈就可能會出血,對視力造成永久性的損害。</li>
+													<li>腎臟：腎衰竭。</li>
+					</ul>								
+				</td>
+			</tr>
+		</table>
+	</section>		
+    </div>
+
+</div> 
+  
+<div data-role="page" id="page4">
+
+	<div data-role="header" data-theme="b">
+		<a href="index.html" rel="external" data-theme="b" abcde"home">Home</a>
+		<h1>肥胖常識</h1>
+	</div><!-- /header -->
+	
+    <div data-role="content">
+    <section>
+		<table align="center">
+			<tr>
+				<td>
+				<FONT COLOR="#0000FF"><B>肥胖介紹:</B></FONT><br>肥胖症是一種慢性病，肥胖症的定義在不斷變化，目前肥胖症最常用的測定體內脂肪含量的方法之一是從一個人的體重指數計算。
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<br><FONT COLOR="#0000FF"><B>併發症:</B></FONT>
+					<ul>
+								<li>內分泌系統方面: 新陳代謝症候群例如: 體內胰島素偏高、血脂肪代謝失調、尿酸偏高、血壓上升和高血糖</li>
+								<li>心血管疾病方面:<br>(1)高血壓 <br>(2)冠狀動脈疾病<br>(3)脂肪代謝異常<br> (4)腦血管及血管栓塞疾病</li>
+								<li>呼吸系統方面: 肥胖換氣不足症候群、阻塞性睡眠中止症候群</li>
+								<li>消化系統方面: 膽結石機率升高，也容易發生急性膽囊炎，肝功能異常</li>
+								<li>關節疾病方面: 退化性關節炎</li>
+								<li>生殖系統方面: 肥胖女性不孕的機會較一般女性高出三成</li>
+								<li>皮膚疾病方面: 靜脈曲張及皮膚炎、濕疹</li>
+								<li>心理疾病方面:自卑感、憂鬱症</li>
+								<li>癌症方面: 大腸直腸癌、前列腺癌、子宮內膜癌、膽囊癌、卵巢癌及乳癌的機會較高</li>
+					</ul>			
+				</td>
+			</tr>
+		</table>
+	</section>		
+    </div>
+
+</div> 
+	
+	
+<div data-role="page" id="page5">
+
+	<div data-role="header" data-theme="b">
+		<a href="index.html" rel="external" data-theme="b" abcde"home">Home</a>
+		<h1>肌膚老化常識</h1>
+	</div><!-- /header -->
+	
+    <div data-role="content">
+    <section>
+		<table align="center">
+			<tr>
+				<td>
+				<FONT COLOR="#0000FF"><B>肌膚老化介紹:</B></FONT><br>肌膚出現了鬆弛、皺紋、膚色暗沈等現象，就可以說肌膚已經開始老化了。
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<br><FONT COLOR="#0000FF"><B>症狀:</B></FONT>
+					<ul>
+							 <li>下巴附近生出粉刺，而且持續一個月都還健在</li>
+							 <li>就算睡眠足夠，黑眼圈還是消不掉</li>
+							 <li>毛孔 正在慢慢向臉頰兩側移動</li>
+							 <li>把鏡子平放在桌面上低頭照，臉形和正常照鏡子有明顯變化</li>
+							 <li>換季或是悶熱時肌膚經常出油 但仍覺得乾燥無比</li>
+							 <li>枕頭上的褶印留在臉上要很長時間才會消去</li>
+							 <li>大笑時出現的表情紋，短時間內不會消除</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+	</section>		
+    </div>
+
+</div> 	
+	
+</body>
+</html>

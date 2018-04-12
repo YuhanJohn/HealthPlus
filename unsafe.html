@@ -1,0 +1,219 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta charset="utf-8">
+	<title>從食照來</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="css/styles.css" />
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/jquery.mobile-1.1.0.min.js"></script>
+	<script src="js/jcarousellite.js"></script>
+	<script src="js/script.js"></script>
+
+	<script type="text/javascript">
+
+	/// 先暫時以陣列記錄相關的優惠資訊
+	var jCarouseliteCount = 3;
+	var jCarouseliteArray = [ [ "日本出口「RISSYOU CO., LTD.鮮蜜柑(FRESH SATSUMA (愛媛))」檢出殘留農藥含量不符規定",
+								"川?水果有限公司",
+								"https://consumer.fda.gov.tw/Files/unsafefood/IMG_1344.JPG",
+								"檢出殘留農藥依普同0.40 ppm",
+								"本案不符合食品衛生管理法第15條有關「殘留農藥安全容許量標準」規定",
+								"案內不合格商品依規定退運或銷毀。",
+								"2013/10/01"] ,
+								
+							  [ "越南出口「天竺鯛魚干(FROZEN DRIED APOGON COOKII)」檢出漂白劑含量不符規定",
+								"大尊貿易有限公司",
+								"https://consumer.fda.gov.tw/Files/unsafefood/IFB02V10766900.JPG",
+								"檢出二氧化硫殘留量0.050 g/kg",
+								"依據「食品添加物使用範圍及限量暨規格標準」，漂白劑殘留量(以二氧化硫計)為0.030 g/kg以下，本案不符合食品衛生管理法第18條規定。",
+								"案內不合格商品依規定退運或銷毀。",
+								"2013/10/01"],
+							  ["印度出口「HNSI紅赤麻 (帶殼)(REDDISH BROWN SESAME SEED)」檢出殘留農藥含量不符規定",
+							   "緯承實業股份有限公司",
+							   "https://consumer.fda.gov.tw/Files/unsafefood/IMG_0064.JPG",
+							   "檢出殘留農藥甲基巴拉松0.04 ppm",
+							   "依據「殘留農藥安全容許量標準」規定，農藥甲基巴拉松容許量為0.01 ppm，本案不符合食品衛生管理法第15條規定。",
+							   "案內不合格商品依規定退運或銷毀。",
+							   "2013/10/01"
+							  ]
+							]
+
+	/// 更換vpreview區塊的圖片時, 將相關參數取代更換
+	function changeImage(imgURL,i){
+		imgURL = $(imgURL).find('img').attr('src');
+		/// 以下指令在URL後面加上'?亂數', 不曉得為何要如此設計, 但沒有加的話會發現開啟URL網頁時間會較久呢
+		$('#slideIMG').attr("src",imgURL+'?'+Math.random());	
+		$('a[rel="slideHREF"]').attr("href",x[i].getElementsByTagName("ImageUrl")[0].childNodes[0].nodeValue);		 
+		$('#slideINFO1 > h1').html(x[i].getElementsByTagName("Title")[0].childNodes[0].nodeValue);//抓標題
+		$('#slideINFO1 > p').html(x[i].getElementsByTagName("ResultDesc")[0].childNodes[0].nodeValue);//抓檢驗內容
+		$('#slideINFO2 > h1').html(x[i].getElementsByTagName("CompanyName")[0].childNodes[0].nodeValue);//抓公司
+		$('#slideINFO2 > h2:nth-of-type(2) > span').html(x[i].getElementsByTagName("Law")[0].childNodes[0].nodeValue);//抓法律
+		$('#slideINFO2 > h2:nth-of-type(3) > span').html(x[i].getElementsByTagName("Process")[0].childNodes[0].nodeValue);//抓結果
+		$('#slideINFO3 > h2 > a').html(x[i].getElementsByTagName("Createtime")[0].childNodes[0].nodeValue);//抓時間
+
+	}
+	
+//xmlpar		
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.open("GET","https://consumer.fda.gov.tw/Food/UnsafeFood.xml",false);
+xmlhttp.send();
+xmlDoc=xmlhttp.responseXML; 
+
+x=xmlDoc.getElementsByTagName("Data");
+//i=0;
+/*
+var txt="";
+var pic="";
+var n = x.length;
+//var n = 20; 
+
+function displayCD(){
+var m = 0;
+for(var i=n-1;m<=3;i--){
+	title=(x[i].getElementsByTagName("Title")[0].childNodes[0].nodeValue);
+	imgurl=(x[i].getElementsByTagName("ImageUrl")[0].childNodes[0].nodeValue);
+	law=(x[i].getElementsByTagName("Law")[0].childNodes[0].nodeValue);
+	createtime=(x[i].getElementsByTagName("Createtime")[0].childNodes[0].nodeValue);
+		//if(createtime.substring(0,4)==2007){
+		txt+="TITLE: " + title + "<br>LAW:" + law+"<br>"+"CREATETIME: " +createtime+"<br>"; 
+		pic+="<img src='" + imgurl + "' height = 125 width = 100>"
+		//<img src="smiley.gif" alt="Smiley face" height="42" width="42">
+		document.getElementById("showPIC").innerHTML=pic;
+		document.getElementById("showCD").innerHTML=txt;
+		//}else{
+		//break;
+		//}
+		n--;
+		m++;
+}
+}
+
+function test2(){
+	alert(n);
+}
+
+function test(){
+	//alert("123");
+    displayCD();
+  //<button><a href="#" id=123 onClick="">try it</a></button> onload="displayCD()" 
+};
+/*
+test( function(){
+  displayCD();
+});*/	
+	</script>
+
+</head> 
+
+<body> 
+
+<!--①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①①-->
+<div data-theme="b" data-role="header" data-position="fixed">
+        <a href="main.html" rel="external" abcde"home">Home</a>
+		<h1>從食照來</h1>
+    </div>
+<div data-role="page" id="HomePage">
+
+	
+	<div data-role="content" class="mhome">	
+	    <div class="videoGallery">
+	        <div class="ThumbsContainer">
+	            <div class="vgThumbs">
+                    <div class="vthumbs" id="vthumbs">
+						<!-- 這裡由後面的javascrpit語法來產生優惠資訊圖片 -->
+                    </div>
+                </div>  
+            </div>
+	        <div class="vpreview">
+				<!-- 這裡先放第一張照片, 然後則以changeImage()來做更換 -->
+	            <a rel="slideHREF" ><img src="https://consumer.fda.gov.tw/Files/unsafefood/IMG_1344.JPG" width="100%" id="slideIMG" alt="" /></a>
+	        </div>
+		</div>
+		<!-- 這裡先放第一張照片的介紹內容, 然後則以changeImage()來做更換 -->
+		<article id="slideINFO1">
+			<h1>日本出口「RISSYOU CO., LTD.鮮蜜柑(FRESH SATSUMA (愛媛))」檢出殘留農藥含量不符規定</h1>
+			<p>檢出殘留農藥依普同0.40 ppm</p>
+		</article>
+		<article id="slideINFO2">
+			<h2>公司：<span>川?水果有限公司</span></h2>
+			<h2>法律：<span>本案不符合食品衛生管理法第15條有關「殘留農藥安全容許量標準」規定</span></h2>
+			<h2>結果：<span>案內不合格商品依規定退運或銷毀。</span></h2>
+		</article>
+		<article id="slideINFO3">
+			<h2>時間：<span>2013/10/01</span></h2>
+		</article>
+	</div><!-- /content -->
+		
+	<script type="text/javascript">
+    /// 在videoGallery置入html碼之範本如下
+	///     <div class="videoGallery">
+	///         <div class="ThumbsContainer">
+	///             <div class="vgThumbs">
+    ///                 <div class="vthumbs">
+    ///                     <ul>
+    ///                         <li onClick="changeImage(this,1);"><img src="圖1檔名" alt="" width="100"></li>
+    ///                         <li onClick="changeImage(this,2);"><img src="圖2檔名" alt="" width="100"></li>
+    ///                         <li onClick="changeImage(this,3);"><img src="圖3檔名" alt="" width="100"></li>
+    ///                     </ul>
+    ///                 </div>
+    ///             </div>        
+    ///         </div>
+	///         <div class="vpreview">
+	///             <a rel="slideHREF" href="源1網址"><img src="圖1檔名" width="100%" id="slideIMG" alt="" /></a>
+	///             <a href="Youube網址" class="playBtn">&#160;</a>
+	///         </div>
+	///     </div>
+	
+	/// 下列程式則為組合出vthumbs部分的html碼
+	x=xmlDoc.getElementsByTagName("Data");
+	var n = x.length;
+	//var n = 20; 
+	var m = 0;
+	str = '<ul>';
+	for (i=n-1 ; m<=10 ; i--)
+		{
+        str += '<li onClick="changeImage(this,' + i + ');"><img src="' + x[i].getElementsByTagName("ImageUrl")[0].childNodes[0].nodeValue + '" width="90" height="90"></a></li>';
+		m++;
+		}
+	str += '</ul>';
+	document.getElementById("vthumbs").innerHTML = str;
+	
+	</script>
+
+</div>
+
+
+<!------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<script type="text/javascript">
+$('#HomePage').on('pageshow',function(event, ui){
+    $(".vthumbs").jCarouselLite({
+        auto: true,
+        speed: 200,
+        swipeThresholds : { x: 20, y: 120, time: 50 },
+        visible: 4,
+        responsive: false
+    }).fadeIn();
+    $(".vthumbs").swiperight(function() {
+        $('.vthumbs').trigger('pauseCarousel')
+    });
+    $(".vthumbs").swipeleft(function() {
+        $('.vthumbs').trigger('pauseCarousel')
+    });
+});
+$('#HomePage').on('pagehide',function(event, ui){
+    $('.vthumbs').trigger('endCarousel').hide();
+});
+</script>
+
+</body>
+</html>

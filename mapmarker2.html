@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2011 Google Inc. All Rights Reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+  <head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no,width=device-width" />
+    <title>健康促進APP</title>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnbUMipfP8CrzYc6GKFAtx8kSFGznPl2g&sensor=false"></script>
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/jquery.mobile-1.1.0.min.js"></script>
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+	$(document).bind("mobileinit", function(){    
+  $.extend(  $.mobile , {    
+   defaultPageTransition: 'none'    
+  });    
+}); 
+	google.load('visualization', '1', { packages: ['table'] });
+      var content_ID = [];
+	  var content_FN = [];
+	  var content_FA = [];
+	  var content_FI = [];
+	  var content_FW = [];
+	  var content_FU = [];
+	  var numRows = 0 ;
+	  var numCols = 0 ;
+	  var count = -1 ;
+	  var db = window.openDatabase("hospital", "1.0", "醫療院所資訊", 1000000);
+	  
+	 
+	
+ 
+            function onGetData() {
+			a();
+			//alert("456");
+                db.transaction(function (t) {
+                    t.executeSql('select * from hospital', [], SetData);
+                });
+            }
+			function SetData(t, result) {
+                for (var i = 0; i < result.rows.length; i++) {
+                    for(var x in result.rows.item(i)) {
+						$("#A").append(result.rows.item(i)[x]+",");
+					}
+							
+					$("#A").append("</br>");						
+                }
+            }
+			
+			
+			$(document).ready(function(){
+				if($("#map_canvas").is(':visible')) {
+				initialize();
+				}
+			});
+			
+			var map ;
+			var geocoder;
+			function initialize(){
+				var mapOptions = {
+				zoom: 13,
+				center: new google.maps.LatLng(24.1184,120.6764),
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			map = new google.maps.Map(document.getElementById('map_canvas'),mapOptions);
+			geocoder = new google.maps.Geocoder();
+			
+			//createMarker('中國醫藥大學附設醫院', 24.15819, 120.68056, "台中市北區育德路２號<br>tel:04-22052121",map);
+ 
+			
+			} 
+			
+			function createMarker(title,lat,lng,content, map){
+				var markerOptions = {
+				position : new google.maps.LatLng(lat,lng),
+				map: map,
+				title:title
+			}
+	
+			var marker = new google.maps.Marker(markerOptions);
+ 
+			var infoOptions = {
+				content: content,
+				pixelOffset: new google.maps.Size(10,10)
+			}
+			var	infowindow = new google.maps.InfoWindow(infoOptions);
+	
+			google.maps.event.addListener(marker, 'click', function(){
+					infowindow.open(map,marker);
+			});
+			}
+			
+			 function setmapcen(lat,lng){
+				map.setCenter(new google.maps.LatLng(lat, lng));
+			}
+			
+			
+			function codeAddress(title,address,tel) {
+ 
+				//提取用戶填入的地址
+				var title ;
+				var address ;
+				var tel ;
+				//以geocoder向Google Map提交查詢
+			geocoder.geocode( {'address': address}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+			//將geocoder回傳的資料中抽出座標的值，再填入input的欄位中
+			var lat = results[0].geometry.location.lat();
+			var lat1 = lat;
+			//$("#lat").val(lat1)
+			var lng = results[0].geometry.location.lng();
+			var lng1 = lng;
+			alert(lat1+','+lng1);
+				//$("#lng").val(lng1)
+				//重新輸出地圖資料
+					map.setCenter(results[0].geometry.location);
+					createMarker(title, lat1, lng1, address+"<br>"+tel,map);
+					/*marker = new google.maps.Marker({
+					map: map,
+					position: results[0].geometry.location
+				});*/
+			} else {
+				//如果找不到地點時回傳的訊息
+				alert("錯誤" + status);
+			}
+			});
+			}
+			
+			function Address(m){
+				var INS = $("#"+m).attr("value");
+				//var address ;
+				geocoder = new google.maps.Geocoder();
+				geocoder.geocode( {'address': INS}, function(results, status) {
+			//將geocoder回傳的資料中抽出座標的值，再填入input的欄位中
+			var lat = results[0].geometry.location.lat();
+			var lat1 = lat;
+			var lng = results[0].geometry.location.lng();
+			var lng1 = lng;
+			document.getElementById("staticmap").innerHTML = "<img src ='http://maps.googleapis.com/maps/api/staticmap?center="+INS+"&zoom=13&size=450x350&maptype=roadmap&markers=color:blue%7Clabel:A%7C"+lat1+","+lng1+"&sensor=false'>";
+			//alert(lat1+','+lng1);
+			//return lat1;
+			});
+			}
+			
+			function createALL(){
+				db.transaction(function(tx) {
+					sql = "select * from hospital";
+					tx.executeSql(sql, [], function(tx, result){
+						for (var i = 0; i < result.rows.length; i++) {
+							//alert(result.rows.length);
+							setTimeout(
+							codeAddress(result.rows.item(i).hospital,result.rows.item(i).address,result.rows.item(i).telephone)
+							,3000);
+						}
+					}, null);	
+				});	
+			}
+			
+			function createbtn(){
+				db.transaction(function(tx) {
+					sql = "select * from hospital";
+					tx.executeSql(sql, [], function(tx, result){
+					var Bstr = "<hr/>";
+						for (var i = 0; i < result.rows.length; i++) {
+						if(result.rows.item(i).hospital!="undefined"){
+							//alert(result.rows.length);
+							//result.rows.item(i).hospital,result.rows.item(i).address,result.rows.item(i).telephone
+							Bstr += "<a id='"+i+"' value='"+result.rows.item(i).address+"' href='#page2'   data-theme='b' data-role='button' rel='external'  onClick='Address("+i+")'>"+result.rows.item(i).hospital+"</li>"+"<a href='"+"tel:"+result.rows.item(i).telephone+"'>"+'電話:'+result.rows.item(i).telephone+"</a>"
+							}else{
+							break;}
+						}
+						document.getElementById("staticmap2").innerHTML = Bstr;
+					}, null);	
+				});		
+			}	//<a data-role="button" rel="external"  onClick="intomap();">test</a>
+
+	
+			function testget(m){
+				var INS = $("#"+m).attr("value");
+				//alert (INS);
+				Address(INS);
+				//alert(ttt);
+				document.getElementById("staticmap").innerHTML = "<img src ='http://maps.googleapis.com/maps/api/staticmap?center="+INS+"&zoom=13&size=450x350&maptype=roadmap&markers=color:blue%7Clabel:A%7C24.14280,120.68170&sensor=false'>";
+			}
+			function intomap(){
+			//alert(123);
+				document.getElementById("staticmap").innerHTML = "<img src ='http://maps.googleapis.com/maps/api/staticmap?center=40045台中市中區平等街139號&zoom=13&size=450x350&maptype=roadmap&markers=color:blue%7Clabel:A%7C24.14280,120.68170&sensor=false'>";
+			}
+    </script>
+	<style type="text/css">
+.ui-page {
+    background: transparent url(back.jpg);
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+
+
+}
+			
+			table{
+				margin:0 0 0 0;
+				width:100%;
+			}
+			div img{
+				width:90%;	
+			}
+			div{
+				text-align:center;
+				color:#1652e1;
+			}
+			#banner{				
+				align: center;
+				width:100%;				
+			}			
+		</style>
+  </head>
+  <body>
+	<div data-role="page" id="page1"><!-- page1 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+	    <a href="index.html" rel="external" abcde"home" >Home</a>	    
+		<h1>建議院所</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content">
+        <a href="#page2" data-theme="b" data-role="button" rel="external"  onClick="">糖尿病建議醫療院所</a>
+		<a href="#" data-theme="b" data-role="button" rel="external"  onClick="">高血壓建議醫療院所</a>
+        <a href="#" data-theme="b" data-role="button" rel="external"  onClick="">肥胖建議醫療院所</a>
+        <a href="#" data-theme="b" data-role="button" rel="external"  onClick="">皮膚建議醫療院所</a>
+		
+    </div>
+	
+    <div data-theme="b" data-role="footer" data-position="fixed">
+	</div>
+	</div><!-- /page1 -->
+	
+	<div data-role="page" id="page2"><!-- page2 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+		<a href="mapmarker2.html" rel="external" abcde"back" >上一頁</a>
+	    <a href="index.html" rel="external" abcde"home">Home</a>
+		<h1>建議院所</h1>
+    </div><!-- /header -->
+    <div data-role="content">
+    <section>
+		<table align="center">
+			<tr>
+				<td>
+					<div id="staticmap">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div id="staticmap2">
+						<script>createbtn()</script>
+					</div>
+				</td>
+				
+			</tr>
+		</table>
+	</section>		
+    </div>
+    <div data-theme="b" data-role="footer" data-position="fixed">
+	</div>
+	</div><!-- /page2 -->
+	
+  </body>
+</html>

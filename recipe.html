@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2011 Google Inc. All Rights Reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+  <head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>健康促進APP</title>
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/jquery.mobile-1.1.0.min.js"></script>
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+	$(document).bind("mobileinit", function(){    
+  $.extend(  $.mobile , {    
+   defaultPageTransition: 'none'    
+  });    
+}); 
+	  google.load('visualization', '1', { packages: ['table'] });
+	  var db = window.openDatabase("ftdb", "1.0", "資料庫", 1000000);
+	  var numRows = 0 ;
+	  var numCols = 0 ;
+	  var count = -1 ;
+	  
+	  //FT食譜名
+	  function recipe_name(){
+	    
+		//讀取FT
+		var query = 'SELECT * FROM 1OeZ4roEF3nSDcJ24mGHMSTwRExbMRSsmlHJihaQ';
+     
+        var queryText = encodeURIComponent(query);
+		 
+        var gvizQuery = new google.visualization.Query(
+            'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
+		
+		gvizQuery.send(function(response) {
+		
+		  numRows = response.getDataTable().getNumberOfRows();  
+          //numCols = response.getDataTable().getNumberOfColumns(); 
+          var content_ID = [numRows];
+	      var content_NM = [numRows];
+	      
+        
+		  for(var i=0;i<numRows;i++){
+		    content_ID[i]=response.getDataTable().getValue(i,0);
+		    content_NM[i]=response.getDataTable().getValue(i,1);
+		  }
+		  
+		  //建立table 寫入讀取資料
+		  db.transaction(function (tx) {
+		    tx.executeSql('CREATE TABLE IF NOT EXISTS Recipe_Name(id TEXT NOT NULL, name TEXT NOT NULL)');
+		  
+		    tx.executeSql('SELECT id FROM Recipe_Name',[],function(tx, rs) {
+			
+			  count = rs.rows.length ;
+			  
+			  for(var iii=count;iii<=numRows-1;iii++){
+		
+	            //alert("4567");
+			    var SQL = 'INSERT INTO Recipe_Name(id,name) VALUES ("'+content_ID[iii]+'", "'+content_NM[iii]+
+	            '")';
+			    //alert(content_ID[iii]);
+				
+			    tx.executeSql(SQL);
+		      }
+			});	
+		  });
+		});		
+	  }
+	  google.setOnLoadCallback(recipe_name);
+	  //FT食譜名
+	  
+	  //FT食譜食材
+	  function recipe_material(){
+	    
+		//讀取FT
+		var query = 'SELECT * FROM 1ZrJkhUxs9LLXEfBdyZFAym4Vi-1IrVpOYsR-3SA';
+     
+        var queryText = encodeURIComponent(query);
+		 
+        var gvizQuery = new google.visualization.Query(
+            'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
+		
+		gvizQuery.send(function(response) {
+		
+		  numRows = response.getDataTable().getNumberOfRows();  
+          //numCols = response.getDataTable().getNumberOfColumns(); 
+          var content_ID = [numRows];
+	      var content_MT = [numRows];
+	      
+        
+		  for(var i=0;i<numRows;i++){
+		    content_ID[i]=response.getDataTable().getValue(i,0);
+		    content_MT[i]=response.getDataTable().getValue(i,1);
+		  }
+		  
+		  //建立table 寫入讀取資料
+		  db.transaction(function (tx) {
+		    tx.executeSql('CREATE TABLE IF NOT EXISTS Recipe_Material(id TEXT NOT NULL, material TEXT NOT NULL)');
+		  
+		    tx.executeSql('SELECT id FROM Recipe_Material',[],function(tx, rs) {
+			
+			  count = rs.rows.length ;
+			  
+			  for(var iii=count;iii<=numRows-1;iii++){
+		
+	            //alert("4567");
+			    var SQL = 'INSERT INTO Recipe_Material(id,material) VALUES ("'+content_ID[iii]+'", "'+content_MT[iii]+
+	            '")';
+			    //alert(content_ID[iii]);
+				
+			    tx.executeSql(SQL);
+		      }
+			});	
+		  });
+		});		
+	  }
+	  google.setOnLoadCallback(recipe_material);
+	  //FT食譜食材	  
+	  
+	  //FT食譜步驟
+	  function recipe_step(){
+	    
+		//讀取FT
+		var query = 'SELECT * FROM 12JehSLk9JxgiynSTXdAPHkjhiQaBd8z2T5-eGpk';
+     
+        var queryText = encodeURIComponent(query);
+		 
+        var gvizQuery = new google.visualization.Query(
+            'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
+		
+		gvizQuery.send(function(response) {
+		
+		  numRows = response.getDataTable().getNumberOfRows();  
+          //numCols = response.getDataTable().getNumberOfColumns(); 
+          var content_ID = [numRows];
+		  var content_OD = [numRows];
+	      var content_ST = [numRows];
+	      
+        
+		  for(var i=0;i<numRows;i++){
+		    content_ID[i]=response.getDataTable().getValue(i,0);
+			content_OD[i]=response.getDataTable().getValue(i,1);
+		    content_ST[i]=response.getDataTable().getValue(i,2);
+		  }
+		  
+		  //建立table 寫入讀取資料
+		  db.transaction(function (tx) {
+		    tx.executeSql('CREATE TABLE IF NOT EXISTS Recipe_Step(id TEXT NOT NULL, odr TEXT NOT NULL, step TEXT NOT NULL)');
+		  
+		    tx.executeSql('SELECT id FROM Recipe_Step',[],function(tx, rs) {
+			
+			  count = rs.rows.length ;
+			  
+			  for(var iii=count;iii<=numRows-1;iii++){
+		
+	            //alert("4567");
+			    var SQL = 'INSERT INTO Recipe_Step(id,odr,step) VALUES ("'+content_ID[iii]+'", "'+content_OD[iii]+'", "'+content_ST[iii]+
+	            '")';
+			    //alert(content_ID[iii]);
+				
+			    tx.executeSql(SQL);
+		      }
+			});	
+		  });
+		});		
+	  }
+	  google.setOnLoadCallback(recipe_step);
+	  //FT食譜步驟	  	  
+	  
+	  function showMENU()
+	{
+		db.transaction(function(tx) {
+			
+			sql = "SELECT * FROM Recipe_Name"; 
+			/// alert(sql);  	/// 偵錯時觀察用
+			tx.executeSql(sql, [], function(tx, results){
+				
+				var len = results.rows.length;
+				/// alert(len); /// 偵錯時觀察用
+				var Bstr = "<hr/>";
+				var disn = "";
+				//alert(len);
+				for (var i = 0 ; i <= len-1 ; i++)
+					{
+						var dbd = new Array(len)
+						dbd[i] = [results.rows.item(i).id,results.rows.item(i).name]
+						
+						if (dbd[i][0] != "undefined"){
+							//alert(dbd[i][1]);
+							Bstr += '<a href="#pageMEN" id="'+dbd[i][0]+'" data-role="button" data-iconpos="left" abcde"Check" data-theme="b" onclick="showINS('+dbd[i][0]+')">'+dbd[i][1]+'</a>';
+							//alert(dbd[i][0]);
+							//show(dbd[i][0]);
+						}else{
+							//alert("123");
+							break;
+						}
+						
+						
+						/*Bstr += '<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="d"><h4>測驗:'+disn+",分數"+dbd[i][1]+",測驗人"+dbd[i][2]+",紀錄於"+dbd[i][3]+'</h4>';
+						Bstr += '<ul data-role="listview"><li><a href="#">建議運動</a></li><li><a href="#">建議醫療院所</a></li></ul>';
+						Bstr += '</div>';*/
+					}
+					document.getElementById("DisplayRES").innerHTML = Bstr;
+	
+			}, null);
+		});
+	}
+	
+	 function show(sh){
+	 //var sh = "123";
+	 //alert(sh);
+		db.transaction(function(tx) {
+			
+			sql = "select step from Recipe_Step where id="+sh+""; 
+			//sql = "select * from Recipe_Name A1,Recipe_Material A2,Recipe_Step A3 where A1.id=A2.id AND A1.id=A3.id "; 
+		    //alert(sql);  	/// 偵錯時觀察用
+			tx.executeSql(sql, [], function(tx, results){
+				
+				var len = results.rows.length;
+				/// alert(len); /// 偵錯時觀察用
+				var Bstr = "<hr/>";
+				var Bstr2 = "<hr/>";
+				var disn = "";
+				//alert(len);
+				for (var i = 0 ; i <= len-1 ; i++)
+					{
+						Bstr2 += i+1+"."+results.rows.item(i).step+'<br>';
+						//Bstr += results.rows.item(i).name+'<br>';
+						//Bstr += results.rows.item(i).material+'<br>';
+					}
+					document.getElementById("testMEN2").innerHTML = Bstr2;
+					
+				sqlj = "select material from Recipe_Material where id="+sh+"";
+				//alert(sqlj);
+				tx.executeSql(sqlj, [], function(tx, results){
+				var lenj = results.rows.length;	
+				//alert(lenj);
+					for (var j = 0 ; j <= lenj-1 ; j++)
+					{
+						//Bstr += results.rows.item(j).step+'<br>';
+						//Bstr += results.rows.item(i).name+'<br>';
+						Bstr += results.rows.item(j).material+'<br>';
+					}
+				document.getElementById("testMEN").innerHTML = Bstr;
+				});
+			}, null);
+		});
+	}
+	
+	function showINS(m){
+		show(m);
+		//var MM = m;
+		var INS = $("#"+m).attr("id");
+		//alert (INS);
+	}
+	  //顯示sqlite內資料
+	  /*function getRec(){
+		recipe_name();
+		recipe_material();
+		recipe_step();
+			//alert("456");
+        db.transaction(function (t){
+          t.executeSql('select * from Recipe_Name A1,Recipe_Material A2,Recipe_Step A3 where A1.id=A2.id AND A2.id=A3.id', [], SetData);
+        });
+      }
+	  function SetData(t, result){
+        for (var i = 0; i < result.rows.length; i++) {
+          for(var x in result.rows.item(i)) {
+			$("#A").append(result.rows.item(i)[x]+",");
+		  }
+							
+		  $("#A").append("</br>");						
+        }
+      }
+	  //顯示sqlite內資料*/
+	  //<a href="#DIAme" data-role="button" data-iconpos="left" abcde"Check" data-theme="b" onclick="">糖尿病</a>
+	</script>
+	<style type="text/css">
+.ui-page {
+    background: transparent url(back.jpg);
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+
+
+}
+			
+			table{
+				margin:0 0 0 0;
+				width:100%;
+			}
+			div img{
+				width:90%;	
+			}
+			div{
+				text-align:center;
+				color:#1652e1;
+			}
+			#banner{				
+				align: center;
+				width:100%;				
+			}			
+		</style>
+  </head>
+  
+  <body>
+  <div data-role="page" id="page1">
+
+	<div data-role="header" data-theme="b">
+		<a href="index.html#page1" rel="external" data-theme="b" abcde"home">Home</a>
+		<h1>建議食譜</h1>
+	</div><!-- /header -->
+
+	<div data-role="content" >	
+		<div>
+			<a href="#pagedia" data-theme="b" data-role="button">糖尿病食譜</a>
+			<a href="#page" data-theme="b" data-role="button">高血壓食譜</a>
+			<a href="#page" data-theme="b" data-role="button">肥胖體質食譜</a>
+			<a href="#page" data-theme="b" data-role="button">肌膚老化食譜</a>
+			<!-- <a href="" id="123" value="1" data-role="button" onclick="showINS('123')">test</a> -->
+		</div>
+	<div id="test">
+	
+	</div>
+	<script>//show(5)</script>
+	</div><!-- /content -->
+</div><!-- /page -->
+      
+   
+<div data-role="page" id="pagedia"><!-- 糖尿病食譜 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <a href="recipe.html" rel="external" abcde"home">建議食譜</a>
+		<h1>糖尿病食譜</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content">
+        <div id="DisplayRES">
+		<script>showMENU()</script>
+		</div>	
+    </div>
+
+</div><!-- /pagedia -->   
+
+<div data-role="page" id="pageMEN"><!-- 食譜 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+		<a href="#pagedia" rel="external" abcde"home">上一頁</a>
+        <h1>食譜</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content">
+	<FONT COLOR="#0000FF"><B>食材:</B></FONT>
+        <div id="testMEN" align="left">
+		</div>
+		<br>
+	<FONT COLOR="#0000FF"><B>步驟:</B></FONT>
+		<div id="testMEN2" align="left">
+		</div>	
+    </div>
+
+</div><!-- /pagedia --> 
+	
+</body>
+</html>

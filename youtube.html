@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html> 
+<html> 
+    <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	
+    <script>
+        var prevSelection = "tab1";
+        $("#navbar ul li").live("click",function(){
+            var newSelection = $(this).children("a").attr("data-tab-class");
+            $("."+prevSelection).addClass("ui-screen-hidden");
+            $("."+newSelection).removeClass("ui-screen-hidden");
+            prevSelection = newSelection;
+        });
+
+        function videopanel(id) { 
+            str = '<iframe width="100%" height="350" src="http://www.youtube.com/embed/' + id + '" frameborder="0" allowfullscreen></iframe>';
+            return str;
+        }
+ 
+		/// 取代原程式的jQuery("#id").bind("click touch" ...之作用 ///
+		function videochange(id) {
+			document.getElementById("player").innerHTML = videopanel(id);		
+		}
+		
+    </script>
+    <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+    <!-- <style>
+        .tab-content{
+            width:100%;
+            height:100%;
+            background-color:white;
+            border-bottom-left-radius:0.5em;
+            border-bottom-right-radius:0.5em;
+        }
+               
+    </style> -->
+	<div data-theme="b" data-role="header" data-position="fixed">
+        <a href="main.html" rel="external" abcde"home">Home</a>
+		<h1>精選影片</h1>
+    </div>
+    </head> 
+
+    <body> 
+        
+		
+        <div data-role="content">   
+		
+			<div id="player">
+				<iframe width="100%" height="350px" src="http://www.youtube.com/embed/R4hIDUtPRxU" frameborder="0" allowfullscreen></iframe>
+			</div>
+			
+            <div data-role="navbar" id="navbar">
+                <ul>
+                    <li><a href="#" class="ui-btn-active" data-tab-class="tab1">糖尿病</a></li>
+                    <li><a href="#" data-tab-class="tab2">高血壓</a></li>
+                    <li><a href="#" data-tab-class="tab3">肥胖</a></li>
+                    <li><a href="#" data-tab-class="tab4">肌膚老化</a></li>
+                </ul>
+            </div>
+			
+            <div class="tab-content">
+			
+                <div class="tab1">
+				<ul data-role="listview" data-inset="true">
+				
+					<div data-role="collapsible">
+						<h4>健康好簡單 糖尿病控管血糖值 2013-03-21</h4>
+						<ul data-role="listview">
+							<li><a href='javascript:videochange("R4hIDUtPRxU");scroll(0,0)'>Part 1</a></li>	  
+							<li><a href='javascript:videochange("Z61Mp1Nha2g");scroll(0,0)'>Part 2</a></li>	  
+							<li><a href='javascript:videochange("_f8FO5OXA2c");scroll(0,0)'>Part 3</a></li>	  
+							<li><a href='javascript:videochange("zZ-VHy-0K1s");scroll(0,0)'>Part 4</a></li>	  
+							<li><a href='javascript:videochange("HC60rC-Qy-s");scroll(0,0)'>Part 5</a></li>
+						</ul>	
+					</div>
+					
+					<div data-role="collapsible">
+						<h4>健康好簡單 糖尿病(上) 2012-02-14</h4>
+						<ul data-role="listview">
+							<li><a href='javascript:videochange("uauGb7W7EXE");scroll(0,0)'>Part 1</a></li>	  
+							<li><a href='javascript:videochange("3OV20Wx8d9E");scroll(0,0)'>Part 2</a></li>	  
+							<li><a href='javascript:videochange("otc0Gsh3Z4c");scroll(0,0)'>Part 3</a></li>	  
+							<li><a href='javascript:videochange("1LY50abHqLs");scroll(0,0)'>Part 4</a></li>	  
+							<li><a href='javascript:videochange("wbQlW01Pnwg");scroll(0,0)'>Part 5</a></li>
+						</ul>	
+					</div>
+					
+					<div data-role="collapsible">
+						<h4>健康好簡單 糖尿病(下) 2012-02-15</h4>
+						<ul data-role="listview">
+							<li><a href='javascript:videochange("V2P3dF1pe9s");scroll(0,0)'>Part 1</a></li>	  
+							<li><a href='javascript:videochange("dn50yD2WsNI");scroll(0,0)'>Part 2</a></li>	  
+							<li><a href='javascript:videochange("heFHImddzis");scroll(0,0)'>Part 3</a></li>	  
+							<li><a href='javascript:videochange("N37PfzHihtw");scroll(0,0)'>Part 4</a></li>	  
+							<li><a href='javascript:videochange("jPEp1qRf4Z8");scroll(0,0)'>Part 5</a></li>
+						</ul>	
+					</div>
+			  
+				</ul>
+                </div>
+				
+                <div class="tab2 ui-screen-hidden">
+				<ul data-role="listview" data-inset="true">
+				
+					<div data-role="collapsible">
+						<h4>健康好簡單 高血壓 2013-10-01</h4>
+						<ul data-role="listview">
+							<li><a href='javascript:videochange("7WUC3PZpTgM");scroll(0,0)'>Part 1</a></li>	  
+							<li><a href='javascript:videochange("HUN6SvwImpc");scroll(0,0)'>Part 2</a></li>	  
+							<li><a href='javascript:videochange("ygeIK19jNCU");scroll(0,0)'>Part 3</a></li>	  
+							<li><a href='javascript:videochange("Wbht21HM55w");scroll(0,0)'>Part 4</a></li>	  
+							<li><a href='javascript:videochange("zjH1G1jBMA8");scroll(0,0)'>Part 5</a></li>
+						</ul>	
+					</div>
+					
+					<div data-role="collapsible">
+						<h4>健康好簡單 高血壓(上) 2012-02-01</h4>
+						<ul data-role="listview">
+							<li><a href='javascript:videochange("xIeBRkzCj3Q");scroll(0,0)'>Part 1</a></li>	  
+							<li><a href='javascript:videochange("35rpcVUcKpM");scroll(0,0)'>Part 2</a></li>	  
+							<li><a href='javascript:videochange("o7MB8lcGpDU");scroll(0,0)'>Part 3</a></li>	  
+							<li><a href='javascript:videochange("yRdyj7p2_q0");scroll(0,0)'>Part 4</a></li>	  
+							<li><a href='javascript:videochange("fbwL0zeMfwc");scroll(0,0)'>Part 5</a></li>
+						</ul>	
+					</div>
+					
+					<div data-role="collapsible">
+						<h4>健康好簡單 高血壓(下) 2012-02-02</h4>
+						<ul data-role="listview">
+							<li><a href='javascript:videochange("1h8mFyg-kBQ");scroll(0,0)'>Part 1</a></li>	  
+							<li><a href='javascript:videochange("nihl09XHrLk");scroll(0,0)'>Part 2</a></li>	  
+							<li><a href='javascript:videochange("hRmU5YT0PEU");scroll(0,0)'>Part 3</a></li>	  
+							<li><a href='javascript:videochange("0mZM_9A1e14");scroll(0,0)'>Part 4</a></li>	  
+							<li><a href='javascript:videochange("aTXiJvQyGgM");scroll(0,0)'>Part 5</a></li>
+						</ul>	
+					</div>
+			  
+				</ul>
+                </div>
+				
+                <div class="tab3 ui-screen-hidden">
+                    Tab3
+                </div>
+				
+                <div class="tab4 ui-screen-hidden">
+                    Tab4
+                </div>
+            </div>
+        </div><!-- /content -->
+
+
+    </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/jquery.mobile-1.1.0.min.js"></script>
+		<style type="text/css">
+.ui-page {
+    background: transparent url(back.jpg);
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+}
+				
+		</style>
+</head>
+
+<body>
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <a href="index.html" rel="external" abcde"home">Home</a>
+		<h1>關於我們</h1>
+    </div><!-- /header -->
+<div id="about-content" class="tab_content" style="position:relative;padding:8px;z-index:1">
+	<img src="Banner-EUCLlogo.png" width=100% />
+	<span style="font-size: small;">
+		<a>本實驗室名稱之所以冠上“前瞻”一詞，是希望能夠為各種產業設想規劃出創新的無所不在商業模式，可隨時隨地取得網路資源與計算能力進行無所不在的服務。所以，本實驗室積極尋求與相關業者合作，透過合作與訓練，奠定堅強實力研發各種無所不在的商業系統，更進一步有機會則參與業者的市場推廣應用，深化合作關係並累積經驗價值，期待能提升本實驗室的產業服務曝光度，並吸引更多的產學合作機會。在此對於實驗室之成立宗旨與定位目標做如下陳述：</a>
+		<ul>
+			<li><a>實驗室成立宗旨在統籌運用資源，引進Ubiquitous Commerce相關技術研究資源，提出可行的商業模式與系統規劃，並透過產學合作落實於企業應用。資訊應用已成為今日企業及組織提升競爭力的重要關鍵，積極與企業合作，加強理論與實務合作，進一步可爭取機會輔導企業申請政府補助資訊計劃案。</a></li>
+			<li><a>在教學方面，實驗室開放相關課程使用，藉由實作將所學之理論與實務結合，提昇學生對於Ubiquitous Commerce之應用能力，經由實驗室的訓練使學生具有完整的專業能力，以滿足企業對此專業人才所需。</a></li>
+			<li><a>在學生能力養成方面，教導正確的Ubiquitous Commerce概念，訓練研發技術並具有整合資訊分析能力，輔以系統導入經營管理理念，在理論與實務結合的研究過程中，培育熟悉資訊科技並明瞭企業特性之高素質資訊應用人才。鼓勵同學參與教師研究，透過知識社群進行數位學習與知識管理，並透過小組合作參與執行企業專案，激發學生潛能並提升競爭能力。</a></li>
+		</ul>
+		<p></p>
+	</span>
+	<!--
+	<div style="position:absolute;bottom:10px;z-index:1;right:10px">
+	<p/><p/>
+	</div>
+	<div style="Position:fixed;bottom:0px; opacity:0.5;z-index:0 " >
+		
+	</div>
+	-->
+<script>
+$(document).bind("mobileinit", function(){    
+  $.extend(  $.mobile , {    
+   defaultPageTransition: 'none'    
+  });    
+}); 
+	
+$(function(){
+document.addEventListener("deviceready", onDeviceReady, false);
+});
+function onDeviceReady() {
+	document.addEventListener("backbutton", onBackKeyDown, false);
+}
+function onBackKeyDown(){
+	document.location.href = "main.html";
+}
+
+</script>
+</body>
+</html>

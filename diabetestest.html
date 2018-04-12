@@ -1,0 +1,431 @@
+<html>
+<head>
+<meta charset="utf-8">
+    <title>健康促進APP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/jquery.mobile-1.1.0.min.js"></script>
+	<style type="text/css">
+.ui-page {
+    background: transparent url(back.jpg);
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+
+
+}
+			
+					
+		</style>
+<script language="JavaScript">
+$(document).bind("mobileinit", function(){    
+  $.extend(  $.mobile , {    
+   defaultPageTransition: 'none'    
+  });    
+}); 
+db = window.openDatabase("test_db", "1.0", "just for test",  2 * 1024 * 1024);
+
+	var Users = new Array(3)
+	Users[0] = ["自己",0]
+	Users[1] = ["媽媽",1]
+	Users[2] = ["爸爸",2]
+	
+	function showUsers(){
+		document.write("<select data-mini='true' data-theme='b' id='selectpeople' name='' ><option value='"+Users[0][1]+"'>"+Users[0][0]+"</option><option value='"+Users[1][1]+"'>"+Users[1][0]+"</option><option value='"+Users[2][1]+"'>"+Users[2][0]+"</option></select>");
+	}
+
+	function recordPoint(){
+		var TResult = document.getElementById("text-1").value; //分數
+		//var SP = document.getElementById("selectpeople").value;
+		var TTT = document.getElementById("selectpeople").value;
+		var SP  = Users[TTT][0];
+		var T   = document.getElementById("Ttime").value;
+		var A   = 1; 
+		
+		db.transaction(function(tx) {
+			/// Remember that the db.transaction function call is asynchronous, so it will return immediately but not necessarily call the callbacks.
+			
+			sql = "CREATE TABLE IF NOT EXISTS TEST_TABLE2 (DisID, TRfield, SPfield, Tfield)";
+			/// alert(sql);  	/// 偵錯時觀察用
+			tx.executeSql(sql, [], function(tx, results){
+				/// The above query will create a table called TEST_TABLE2 in 'SHM_DB' database(which is already created).
+				
+				sql = "INSERT INTO TEST_TABLE2 (DisID, TRfield, SPfield, Tfield) VALUES ('"+ A +"','" + TResult + "','" + SP + "','" + T + "')";
+				/// alert(sql);  	/// 偵錯時觀察用
+				tx.executeSql(sql, [], function(tx, results){
+					/// The above query will insert a record (TR, SP, T) into TEST_TABLE2.
+
+					sql = "SELECT * FROM TEST_TABLE2"; 
+					/// alert(sql);  	/// 偵錯時觀察用
+					tx.executeSql(sql, [], function(tx, results){
+						/// To read the last record by using a callback to capture the results as follows. 
+						
+						var len = results.rows.length;
+						/// alert(len); /// 偵錯時觀察用
+						var i = len - 1;
+						alert("分數" + results.rows.item(i).TRfield + ", 測驗人" + results.rows.item(i).SPfield + ", 記錄於" + results.rows.item(i).Tfield);
+
+						/// 完成記錄儲存後將[儲存此筆]按鈕予以disable
+						//document.getElementById("SubmitBMI").setAttribute("disabled","disabled");
+					}, null);
+
+				});
+			});
+		});
+	}
+	
+function reload(){
+	$("input").val("");
+	//alert(123);
+} 	
+
+//question
+	var Questions = new Array(9)
+	Questions[0] = ["Q1:家族有糖尿病患者。",0,1,"1.gif"]
+	Questions[1] = ["Q2:沒有運動習慣。",0,1,"2.gif"]
+	Questions[2] = ["Q3:愛大吃大喝",0,1,"3.gif"]
+	Questions[3] = ["Q4:愛吃肥肉，青菜不吃。",0,1,"4.gif"]
+	Questions[4] = ["Q5:容易飢餓，食量變大，體重卻越來越輕。",0,1,"5.gif"]
+	Questions[5] = ["Q6:只喝飲料不喝水。",0,1,"6.gif"]
+	Questions[6] = ["Q7:容易口渴，尿量增加。",0,1,"7.gif"]
+	Questions[7] = ["Q8:飲食不正常，兩餐當一餐吃。",0,1,"8.gif"]
+	Questions[8] = ["Q9:(男)腰圍大於90公分，(女)腰圍大於80公分。",0,1,"9.gif"]
+	Questions[9] = ["Q10:常抽菸喝酒。",0,1,"10.gif"]
+
+var countQ = 0;	
+function showQues(){
+	var j =  countQ+1 ;
+	document.write("<p align='right'>題數:"+j+"/"+Questions.length+"</p>");
+	document.write("<p align='center'>"+Questions[countQ][0]+"</br>"+"</p>");
+	countQ++;
+	//document.getElementById('1').outerHTML = Questions[0];
+	//document.write(123);
+}
+var countB = 0;
+function showBtns(){
+var b = countB+2 ;
+if(countB+1 < Questions.length){
+	document.write("<p align='center' ><a href='#Q"+b+"' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][1]+"' data-transition='flow'>無</a>");
+	document.write("<a href='#Q"+b+"' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][2]+"' data-transition='flip'>有</a></p>");
+}else{
+	document.write("<p align='center' ><a href='#Result' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][1]+"' data-transition='flow'>無</a>");
+	document.write("<a href='#Result' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][2]+"' data-transition='flip'>有</a></p>");
+}
+countB++;
+}
+
+function showScos(){
+document.write("<form align='center'><label for='text-1'>score:</label><input type='mini-text' name='text-1' id='text-1' disabled></form>");
+}
+
+var countP = 0;
+function showPics(){
+document.write("<p align='center'><img src = 'picture/diabetes/"+Questions[countP][3]+"' height = 345 width = 310></p>");
+countP++;
+}
+
+	function setRes(){
+		var sres = document.getElementById("text-1").value;
+		if(sres>=8&&sres<=10){
+			document.getElementById("test222").innerHTML = "請至醫院詳細檢查，並每年固定做健檢，諮詢醫師。" ;
+		}else if(sres>=5&&sres<=7){
+			document.getElementById("test222").innerHTML = "該認真調整生活方式，檢視不良習慣。";	
+		}else if(sres>=0&&sres<=4){
+			document.getElementById("test222").innerHTML = "改變一下生活習慣，就能換取健康人生喔。";
+		}else{
+			document.getElementById("test222").innerHTML = "太棒了，請繼續保持。";
+		}
+	}
+	
+	function setDoc(){
+		var sres = document.getElementById("text-1").value;
+		if(sres>=8&&sres<=10){
+			document.getElementById("test222").innerHTML = "111" ;
+		}else if(sres>=5&&sres<=7){
+			document.getElementById("test222").innerHTML = "222";	
+		}else if(sres>=2&&sres<=4){
+			document.getElementById("test222").innerHTML = "333";
+		}else{
+			document.getElementById("test222").innerHTML = "無資料";
+		}
+	}
+	
+	function setFood(){
+		var sres = document.getElementById("text-1").value;
+		if(sres>=8&&sres<=10){
+			document.getElementById("test222").innerHTML = 
+"<ul><li>避免&nbsp(1)含糖食物<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp(2)過於軟爛食物<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp(3)高膽固醇食物<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp(4)高糖水果<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp(5)助熱生火、辛燥傷陰食物<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp(6)黃豆製品等食物的攝取<li>建議每日可適量攝取含有250毫克可可黃烷醇萃取營養品。可有效改善胰島素的敏感性，甚至達到平穩血糖的作用<li>高纖類食物(糙米、燕麥、薏仁、黃豆、綠豆、紅豆)</ul>";
+		}else if(sres>=5&&sres<=7){
+			document.getElementById("test222").innerHTML = 
+			"1.多吃蔬菜控制鹽分<br>2.控制熱量";	
+		}else if(sres>=0&&sres<=4){
+			document.getElementById("test222").innerHTML = "1.少吃零食點心";
+		}else{
+			document.getElementById("test222").innerHTML = "無資料";
+		}
+	}
+
+	function setExers(){
+		var sres = document.getElementById("text-1").value;
+		if(sres>=8&&sres<=10){
+			document.getElementById("test222").innerHTML = 
+			"<ul><li>運動時攜帶糖尿病護照以及小點心或糖片，且避免單獨運動<li>培養與醫生的信賴關係</ul>" ;
+		}else if(sres>=5&&sres<=7){
+			document.getElementById("test222").innerHTML = 
+			"<ul><li>積極改變生活型態<li>提高心肺機能<li>運動以有氧最佳，如健走、慢跑、游泳、太極拳等<li>克服緊張</ul>";	
+		}else if(sres>=0&&sres<=4){
+			document.getElementById("test222").innerHTML = 
+			"<ul><li>注重身體清潔<li>運動及短期旅行解除壓力<li>美滿性生活<li>早餐規律飲食習慣<li>運動帶入生活中<li>菸酒適量<li>快便快眠是健康標準</ul>";
+		}else{
+			document.getElementById("test222").innerHTML = "無資料";
+		}
+	}
+</script>
+</head>
+
+<body background ="back.png" >
+
+<div data-role="page" id="Q1">
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content" >
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+<div data-role="page" id="Q2">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+<div data-role="page" id="Q3">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q4">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q5">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q6">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q7">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q8">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q9">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q10">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>糖尿病自我檢測</h1>
+</div><!-- /header -->	
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+showPics()
+</script>
+</div>
+</div>
+
+<script language="JavaScript">
+	var count = 0;
+		$("a").click(function () {
+			var attr = Number($(this).attr("value"))+Number($("input").val());
+			//Number 強制轉型成數字，$("textarea").val()抓取textbox值
+		$("input").val(attr);
+		count++;
+		//alert(123);
+		setRes();
+			
+		});
+		
+		function show(){
+			var TTT = document.getElementById("text-1").value;
+			alert(TTT);
+		} //測試用
+</script>
+
+<div data-role="page" id="Result">	
+	<div data-theme="b" data-role="header" data-position="fixed">
+		<h1>糖尿病自我檢測</h1>
+	</div><!-- /header -->	
+	
+	<div data-role="content">
+	<section>
+			<table align="center">
+				<tr>
+					<td>
+						<p align="center">檢測結果</p>	
+						<form align="center">
+							<label for="text-1" >score:</label>
+							<input type="mini-text" name="text-1" id="text-1" disabled>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div data-role="controlgroup" data-type="horizontal" data-mini="true">
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setRes()">測驗結果</a>
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setExers()">建議生活習慣</a>
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setFood()">建議飲食</a>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<table align="center">
+				<tr>
+					<td colspan='3'>
+						<div id="test222"></div>
+					</td>
+				</tr>
+			</table>
+			<table align="center">
+				<tr>
+					<td>
+						<label >測驗人:</label>
+						<script>showUsers()</script><!-- /users -->	
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div data-role="fieldcontain">
+							<p id="TEST"></p>
+							<label for="Ttime">測驗時間：</label>
+							<input type="datetime-local" name="Ttime" id="Ttime" />
+							<script>document.getElementById("Ttime").value = new Date();</script> <!-- 將此輸入值設定為現在時間 -->
+						</div><!-- /time -->
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">
+							<a href="" data-role="button" data-theme="b" data-inline="true" data-transition="flip" onClick="recordPoint();">儲存結果</a>
+							<a href="#Q1" data-role="button" data-theme="b" data-inline="true" data-transition="flip" onClick="reload();">再測一次</a>
+						</p>
+					</td>
+				</tr>
+			</table>
+		</section>
+	</div><!-- /content -->	
+
+	<div data-theme="b" data-role="footer" data-position="fixed">
+		<div data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a class="links" name="index.html#page3" data-transition="none" data-theme="" abcde"star">自我檢測</a></li>
+                <li><a class="links" name="index.html" data-transition="none" data-theme="" abcde"home">回首頁</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /footer -->
+	
+</div><!-- /result -->
+<script>
+	$("a.links").click(function(){
+		document.location.href = $(this).attr("name");
+	})
+</script>
+</body>
+</html>

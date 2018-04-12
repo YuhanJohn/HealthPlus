@@ -1,0 +1,773 @@
+﻿<!DOCTYPE html> 
+<html> 
+	<head> 
+    <title>健康促進APP</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.2.min.js"></script>
+	<script src="js/jquery.mobile-1.1.1.min.js"></script>
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+	$(document).bind("mobileinit", function(){    
+  $.extend(  $.mobile , {    
+   defaultPageTransition: 'none'    
+  });    
+});
+	google.load('visualization', '1', { packages: ['table'] });
+	var db = window.openDatabase("test_db", "1.0", "just for test",  2 * 1024 * 1024);
+	var db2 = window.openDatabase("ftdb", "1.0", "資料庫", 1000000);
+	var db3 = window.openDatabase("hospital", "1.0", "醫療院所資訊", 1000000);
+	
+	//顯示結果
+	function showPoint()
+	{
+		db.transaction(function(tx) {
+			/// Remember that the db.transaction function call is asynchronous, so it will return immediately but not necessarily call the callbacks.
+			
+			sql = "SELECT * FROM TEST_TABLE2"; 
+			/// alert(sql);  	/// 偵錯時觀察用
+			tx.executeSql(sql, [], function(tx, results){
+				/// To read the last record by using a callback to capture the results as follows. 
+				
+				var len = results.rows.length;
+				/// alert(len); /// 偵錯時觀察用
+				var Bstr = "<hr/>";
+				var disn = "";
+				for (var i = 0 ; i <= len-1 ; i++)
+					{
+						//alert(i);
+						var dbd = new Array(len)
+						dbd[i] = [results.rows.item(len-1-i).DisID,results.rows.item(len-1-i).TRfield,results.rows.item(len-1-i).SPfield,results.rows.item(len-1-i).Tfield,i+1]
+						//alert(dbd[i][0]+dbd[i][1]+dbd[i][2]+dbd[i][3]);
+						/*document.write("<div data-role='collapsible' data-collapsed='true' data-theme='b' data-content-theme='d'><h4>分數"+dbd[i][1]+'測驗人'+dbd[i][2]+'紀錄於'+dbd[i][3]+"</h4>");
+						document.write("<ul data-role='listview'><li><a href='#'>List item 1</a></li><li><a href='#'>List item 2</a></li></ul>");
+						document.write("</div>");*/
+						if(dbd[i][0] == 1){
+							disn = "糖尿病";
+						}else if(dbd[i][0] == 2){
+							disn = "高血壓";
+						}else if(dbd[i][0] == 3){
+							disn = "肥胖體質";
+						}else{
+							disn = "肌膚老化";
+						}
+						Bstr += '<a href="#page7s" id="'+dbd[i][4]+'" valueC="'+dbd[i][0]+'" value="'+dbd[i][1]+'" data-role="button" data-corners="false" data-mini="true" data-theme="b" data-content-theme="d" onclick="ABC('+dbd[i][4]+')">測驗:'+disn+",分數"+dbd[i][1]+",測驗人"+dbd[i][2]+",紀錄於"+dbd[i][3]+'</a>';
+					}
+					document.getElementById("DisplayRES").innerHTML = Bstr;
+				/*tx.executeSql(sql, [], function(tx, results){
+				
+					alert(123);
+					showRES();
+					//document.write("<div data-role='collapsible' data-collapsed='true' data-theme='b' data-content-theme='d'><h4>分數</h4></div>");
+				
+				});	*/
+			}, null);
+		});
+	}
+	/*1糖尿病
+	2高血壓
+	3肥胖
+	4肌膚老化*/
+	var Results = new Array(3)
+	Results[0] = ["Q1:家族有糖尿病患者。",0,1,"1.jpg"]
+	Results[1] = ["Q2:沒有運動習慣。",0,1,"2.jpg"]
+	Results[2] = ["Q3:愛大吃大喝",0,1,"3.jpg"]
+	
+	function showRES(){
+		//alert(dbd[0][0]);
+		for(var res = 0 ; res < Results.length ; res++){
+			document.write("<div data-role='collapsible' data-collapsed='true' data-theme='b' data-content-theme='d'><h4>分數"+Results[res][1]+'測驗人'+Results[res][2]+'紀錄於'+Results[res][3]+"</h4>");
+			document.write("<ul data-role='listview'><li><a href='#'>List item 1</a></li><li><a href='#'>List item 2</a></li></ul>");
+			document.write("</div>");
+			//alert(r);
+			//alert(Results[r][0]);
+		}
+	}
+	
+	function ABC(s){
+		var INSV = $("#"+s).attr("value");
+		var INSC = $("#"+s).attr("valueC");
+		document.getElementById("Display7s").value = INSV;
+		document.getElementById("Display7s").class = INSC;
+		setRes();
+		//return INSV;
+	}
+	
+	
+	function setRes(){
+		var sss = document.getElementById("Display7s").class;
+		var sres = document.getElementById("Display7s").value;
+	if(sss==1){	
+		if(sres>=8&&sres<=10){
+			document.getElementById("Display7s").innerHTML = "請至醫院詳細檢查，並每年固定做健檢，諮詢醫師。" ;
+		}else if(sres>=5&&sres<=7){
+			document.getElementById("Display7s").innerHTML = "該認真調整生活方式，檢視不良習慣。";	
+		}else if(sres>=2&&sres<=4){
+			document.getElementById("Display7s").innerHTML = "改變一下生活習慣，就能換取健康人生喔。";
+		}else{
+			document.getElementById("Display7s").innerHTML = "太棒了，請繼續保持。";
+		}
+	}else if(sss==2){
+		if(sres>=75){
+			document.getElementById("Display7s").innerHTML = "您要注意囉！！您可能是糖尿病高血壓的高危險群喔！建議您趕快與專業的醫生諮詢，並定時量測血糖血壓，確認您目前的血糖血壓是不是已經偏高了？ 如果經由醫生確認您已經屬於糖尿病高血壓的前期，建議您應聽從醫師的指示和建議，將您的生活型態、飲食習慣和運動習慣好好進行調整，並諮詢醫生是否需要配合用藥，趕快將您的血糖血壓控制在正常的範圍，並養成定時量測血糖血壓的習慣，瞭解您的調整和用藥是否能夠幫助您控制血糖血壓，做好糖尿病與高血壓的健康管理。" ;
+		}else if(sres>=50&&sres<=74){
+			document.getElementById("Display7s").innerHTML = "您要趕快瞭解您的血糖血壓狀況囉！因為您現在的生活型態有點危險呢！也要開始注意您的身體最近是不是有發出平常沒有的警訊？當然建議您可以向專業的醫師諮詢，並且定時量測血糖血壓，確認血糖血壓的數值是不是屬於正常的範圍。 如果您的血糖血壓數值已經有點偏高了，您也可以請醫生給您生活、飲食、運動上的建議，將您的生活型態、飲食習慣和運動程度調整一下，並且維持量測血糖血壓的習慣和頻率，確保透過生活、飲食和運動習慣的調整，能夠讓您的血糖血壓維持在正常的範圍，回到身體正常健康的狀態。";	
+		}else if(sres< 50){
+			document.getElementById("Display7s").innerHTML = "恭喜您！您目前的生活型態保持的還不錯喔！身體應該也是很不錯吧～要好好維持這樣良好的生活型態，建議您也可以定期量測一下自己的血糖血壓，確保身體狀況良好喔！";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else if(sss==3){
+		if(sres>=6&&sres<=8){
+			document.getElementById("Display7s").innerHTML = "按照科學數據顯示，人體內脂肪率超過30%就算肥胖，而你現在體內的脂肪率絕對在30%以上，如果再不采取行動，又一個豬豬就誕生了。" ;
+		}else if(sres>=3&&sres<=5){
+			document.getElementById("Display7s").innerHTML = "你體內的脂肪率應該在25%-30%。雖然看起來不胖，但你正一步步向肥胖靠近，現在改變飲食方式與生活習慣完全來得及，如果再加適量運動，完全可以遏制肥胖向你侵襲。";	
+		}else if(sres<=2){
+			document.getElementById("Display7s").innerHTML = "目前來看你體內的脂肪率控制在25%以下，應該說身體非常苗條，記住，好的飲食方式和生活習慣是遠離肥胖的良方。";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else{
+		if(sres>=7){
+			document.getElementById("Display7s").innerHTML = "您的肌膚已經有老化現象，請進行抗氧保養工程由於環境污染、紫外線、菸害、生活壓力、熬夜等生活在高度污下，自由基便會開始破壞我們的細胞，讓皮膚失去彈性和光澤，造成老化的產生。" ;
+		}else if(sres>=3&&sres<=6){
+			document.getElementById("Display7s").innerHTML = "拉警報囉！您的肌膚離老化不遠，若不趕快加強保養措施，可怕的老化會找上妳喲，加油!";	
+		}else if(sres<=2){
+			document.getElementById("Display7s").innerHTML = "您的肌膚很有活力，不是天生麗質就是保養做得一級棒，預防老化不嫌早，請繼續維持。";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}
+		
+	}
+	
+	function setDoc(){
+		var sss = document.getElementById("Display7s").class;
+		var sres = document.getElementById("Display7s").value;
+	if(sss==1){	
+		if(sres>=8&&sres<=10){
+			document.getElementById("Display7s").innerHTML = "111" ;
+		}else if(sres>=5&&sres<=7){
+			document.getElementById("Display7s").innerHTML = "222";	
+		}else if(sres>=2&&sres<=4){
+			document.getElementById("Display7s").innerHTML = "333";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else if(sss==2){
+		if(sres>=75){
+			document.getElementById("Display7s").innerHTML = "111" ;
+		}else if(sres>=50&&sres<=74){
+			document.getElementById("Display7s").innerHTML = "222";	
+		}else if(sres< 50){
+			document.getElementById("Display7s").innerHTML = "333";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else if(sss==3){
+		if(sres>=6&&sres<=8){
+			document.getElementById("Display7s").innerHTML = "小於8大於6" ;
+		}else if(sres>=3&&sres<=5){
+			document.getElementById("Display7s").innerHTML = "小於5大於3";	
+		}else if(sres<=2){
+			document.getElementById("Display7s").innerHTML = "小於2";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else{
+		if(sres>=7){
+			document.getElementById("Display7s").innerHTML = "111" ;
+		}else if(sres>=3&&sres<=6){
+			document.getElementById("Display7s").innerHTML = "222";	
+		}else if(sres<=2){
+			document.getElementById("Display7s").innerHTML = "333";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}	
+	}
+	
+	function setFood(){
+			var sss = document.getElementById("Display7s").class;
+		var sres = document.getElementById("Display7s").value;
+	if(sss==1){	
+			if(sres>=8&&sres<=10){
+			document.getElementById("Display7s").innerHTML = 
+"1.避免食用:<br>(1)含糖食物<br>(2)過於軟爛食物<br>(3)高膽固醇食物<br>(4)高糖水果<br>(5)助熱生火、辛燥傷陰食物<br>(6)黃豆製品等食物的攝取<br>2.建議每日可適量攝取含有250毫克可可黃烷醇萃取營養品。可有效改善胰島素的敏感性，甚至達到平穩血糖的作用<br>3.高纖類食物(糙米、燕麥、薏仁、黃豆、綠豆、紅豆)";
+		}else if(sres>=5&&sres<=7){
+			document.getElementById("Display7s").innerHTML = 
+			"1.多吃蔬菜控制鹽分<br>2.控制熱量";	
+		}else if(sres>=0&&sres<=4){
+			document.getElementById("Display7s").innerHTML = "1.少吃零食點心";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else if(sss==2){
+		if(sres>=75){
+			document.getElementById("Display7s").innerHTML = "111" ;
+		}else if(sres>=50&&sres<=74){
+			document.getElementById("Display7s").innerHTML = "222";	
+		}else if(sres< 50){
+			document.getElementById("Display7s").innerHTML = "333";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else if(sss==3){
+		if(sres>=6&&sres<=8){
+			document.getElementById("Display7s").innerHTML = "小於8大於6" ;
+		}else if(sres>=3&&sres<=5){
+			document.getElementById("Display7s").innerHTML = "小於5大於3";	
+		}else if(sres<=2){
+			document.getElementById("Display7s").innerHTML = "小於2";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else{
+		if(sres>=7){
+			document.getElementById("Display7s").innerHTML = "111" ;
+		}else if(sres>=3&&sres<=6){
+			document.getElementById("Display7s").innerHTML = "222";	
+		}else if(sres<=2){
+			document.getElementById("Display7s").innerHTML = "333";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}	
+	}
+	
+	function setExers(){
+			var sss = document.getElementById("Display7s").class;
+		var sres = document.getElementById("Display7s").value;
+	if(sss==1){	
+		if(sres>=8&&sres<=10){
+			document.getElementById("Display7s").innerHTML = 
+			"1.運動時攜帶糖尿病護照以及小點心或糖片，且避免單獨運動<br>2.培養與醫生的信賴關係" ;
+		}else if(sres>=5&&sres<=7){
+			document.getElementById("Display7s").innerHTML = 
+			"1.積極改變生活型態<br>2.提高心肺機能<br>3.運動以有氧最佳，如健走、慢跑、游泳、太極拳等<br>4.克服緊張";	
+		}else if(sres>=0&&sres<=4){
+			document.getElementById("Display7s").innerHTML = 
+			"1.注重身體清潔<br>2.運動及短期旅行解除壓力<br>2.美滿性生活<br>3.早餐規律飲食習慣<br>4.運動帶入生活中<br>5.菸酒適量<br>快便快眠是健康標準";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else if(sss==2){
+		if(sres>=75){
+			document.getElementById("Display7s").innerHTML = "111" ;
+		}else if(sres>=50&&sres<=74){
+			document.getElementById("Display7s").innerHTML = "222";	
+		}else if(sres< 50){
+			document.getElementById("Display7s").innerHTML = "333";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else if(sss==3){
+		if(sres>=6&&sres<=8){
+			document.getElementById("Display7s").innerHTML = "小於8大於6" ;
+		}else if(sres>=3&&sres<=5){
+			document.getElementById("Display7s").innerHTML = "小於5大於3";	
+		}else if(sres<=2){
+			document.getElementById("Display7s").innerHTML = "小於2";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}else{
+		if(sres>=7){
+			document.getElementById("Display7s").innerHTML = "111" ;
+		}else if(sres>=3&&sres<=6){
+			document.getElementById("Display7s").innerHTML = "222";	
+		}else if(sres<=2){
+			document.getElementById("Display7s").innerHTML = "333";
+		}else{
+			document.getElementById("Display7s").innerHTML = "無資料";
+		}
+	}	
+	}
+	
+
+	
+	/*<div data-role="collapsible" data-collapsed="false" data-theme="b" data-content-theme="d">
+    <h4>Heading</h4>
+    <ul data-role="listview">
+        <li><a href="#">List item 1</a></li>
+        <li><a href="#">List item 2</a></li>
+        <li><a href="#">List item 3</a></li>
+    </ul>
+	</div>*/
+	
+						/*Bstr += '<div data-role="collapsible" data-collapsed="false" data-theme="b" data-content-theme="d">';
+						Bstr += '<h4>分數'+ results.rows.item(i).TRfield +'測驗人'+results.rows.item(i).SPfield +'時間'+ results.rows.item(i).Tfield+'</h4>';
+						Bstr += '<ul data-role="listview"><li><a href="#">List item 1</a></li></ul>';
+						Bstr += '</div>';*/
+						
+		//FT食譜名
+		function recipe_name(){
+	    
+		//讀取FT
+		var query = 'SELECT * FROM 1OeZ4roEF3nSDcJ24mGHMSTwRExbMRSsmlHJihaQ';
+     
+        var queryText = encodeURIComponent(query);
+		 
+        var gvizQuery = new google.visualization.Query(
+            'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
+		
+		gvizQuery.send(function(response) {
+		
+		  numRows = response.getDataTable().getNumberOfRows();  
+          //numCols = response.getDataTable().getNumberOfColumns(); 
+          var content_ID = [numRows];
+	      var content_NM = [numRows];
+	      
+        
+		  for(var i=0;i<numRows;i++){
+		    content_ID[i]=response.getDataTable().getValue(i,0);
+		    content_NM[i]=response.getDataTable().getValue(i,1);
+		  }
+		  
+		  //建立table 寫入讀取資料
+		  db2.transaction(function (tx) {
+		    tx.executeSql('CREATE TABLE IF NOT EXISTS Recipe_Name(id TEXT NOT NULL, name TEXT NOT NULL)');
+		  
+		    tx.executeSql('SELECT id FROM Recipe_Name',[],function(tx, rs) {
+			
+			  count = rs.rows.length ;
+			  
+			  for(var iii=count;iii<=numRows-1;iii++){
+		
+	            //alert("4567");
+			    var SQL = 'INSERT INTO Recipe_Name(id,name) VALUES ("'+content_ID[iii]+'", "'+content_NM[iii]+
+	            '")';
+			    //alert(content_ID[iii]);
+				
+			    tx.executeSql(SQL);
+		      }
+			});	
+		  });
+		});		
+	  }
+	  google.setOnLoadCallback(recipe_name);
+	  //FT食譜名
+	  
+	  //FT食譜食材
+	  function recipe_material(){
+	    
+		//讀取FT
+		var query = 'SELECT * FROM 1ZrJkhUxs9LLXEfBdyZFAym4Vi-1IrVpOYsR-3SA';
+     
+        var queryText = encodeURIComponent(query);
+		 
+        var gvizQuery = new google.visualization.Query(
+            'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
+		
+		gvizQuery.send(function(response) {
+		
+		  numRows = response.getDataTable().getNumberOfRows();  
+          //numCols = response.getDataTable().getNumberOfColumns(); 
+          var content_ID = [numRows];
+	      var content_MT = [numRows];
+	      
+        
+		  for(var i=0;i<numRows;i++){
+		    content_ID[i]=response.getDataTable().getValue(i,0);
+		    content_MT[i]=response.getDataTable().getValue(i,1);
+		  }
+		  
+		  //建立table 寫入讀取資料
+		  db2.transaction(function (tx) {
+		    tx.executeSql('CREATE TABLE IF NOT EXISTS Recipe_Material(id TEXT NOT NULL, material TEXT NOT NULL)');
+		  
+		    tx.executeSql('SELECT id FROM Recipe_Material',[],function(tx, rs) {
+			
+			  count = rs.rows.length ;
+			  
+			  for(var iii=count;iii<=numRows-1;iii++){
+		
+	            //alert("4567");
+			    var SQL = 'INSERT INTO Recipe_Material(id,material) VALUES ("'+content_ID[iii]+'", "'+content_MT[iii]+
+	            '")';
+			    //alert(content_ID[iii]);
+				
+			    tx.executeSql(SQL);
+		      }
+			});	
+		  });
+		});		
+	  }
+	  google.setOnLoadCallback(recipe_material);
+	  //FT食譜食材	  
+	  
+	  //FT食譜步驟
+	  function recipe_step(){
+	    
+		//讀取FT
+		var query = 'SELECT * FROM 12JehSLk9JxgiynSTXdAPHkjhiQaBd8z2T5-eGpk';
+     
+        var queryText = encodeURIComponent(query);
+		 
+        var gvizQuery = new google.visualization.Query(
+            'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
+		
+		gvizQuery.send(function(response) {
+		
+		  numRows = response.getDataTable().getNumberOfRows();  
+          //numCols = response.getDataTable().getNumberOfColumns(); 
+          var content_ID = [numRows];
+		  var content_OD = [numRows];
+	      var content_ST = [numRows];
+	      
+        
+		  for(var i=0;i<numRows;i++){
+		    content_ID[i]=response.getDataTable().getValue(i,0);
+			content_OD[i]=response.getDataTable().getValue(i,1);
+		    content_ST[i]=response.getDataTable().getValue(i,2);
+		  }
+		  
+		  //建立table 寫入讀取資料
+		  db2.transaction(function (tx) {
+		    tx.executeSql('CREATE TABLE IF NOT EXISTS Recipe_Step(id TEXT NOT NULL, odr TEXT NOT NULL, step TEXT NOT NULL)');
+		  
+		    tx.executeSql('SELECT id FROM Recipe_Step',[],function(tx, rs) {
+			
+			  count = rs.rows.length ;
+			  
+			  for(var iii=count;iii<=numRows-1;iii++){
+		
+	            //alert("4567");
+			    var SQL = 'INSERT INTO Recipe_Step(id,odr,step) VALUES ("'+content_ID[iii]+'", "'+content_OD[iii]+'", "'+content_ST[iii]+
+	            '")';
+			    //alert(content_ID[iii]);
+				
+			    tx.executeSql(SQL);
+		      }
+			});	
+		  });
+		});		
+	  }
+	  google.setOnLoadCallback(recipe_step);
+	  //FT食譜步驟			
+
+			 function a() {
+	 //alert("1");
+        var query = "SELECT"+ "'id' as '編碼'"+ "," +" 'city' as '縣市'" + "," + "'hospital' as '醫院'" +  "," + "'address' as '地址'" +"," + "'telephone' as '電話'" + "," + "'doctor' as '醫師'" +
+            'FROM 16P7kXdBs8sSsNy9fehiCS6suWlyGzxQGADhwsnc';
+     
+        var queryText = encodeURIComponent(query);
+		 
+        var gvizQuery = new google.visualization.Query(
+            'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
+        		 
+   
+        gvizQuery.send(function(response) {
+		  numRows = response.getDataTable().getNumberOfRows();  
+          numCols = response.getDataTable().getNumberOfColumns(); 
+		  content_ID = [numRows];
+		  content_FN = [numRows];
+		  content_FA = [numRows];
+		  content_FI = [numRows];
+		  content_FW = [numRows];
+		  content_FU = [numRows];
+		  for(var i=0;i<numRows;i++)
+		  {
+		  content_ID[i]=response.getDataTable().getValue(i,0);
+		  content_FN[i]=response.getDataTable().getValue(i,1);
+		  content_FA[i]=response.getDataTable().getValue(i,2);
+		  content_FI[i]=response.getDataTable().getValue(i,3);
+		  content_FW[i]=response.getDataTable().getValue(i,4);
+		  content_FU[i]=response.getDataTable().getValue(i,5);
+		  //alert(content_FU[i]);
+		  }
+		  //alert(content_ID[2]+content_FN[2]+content_NA[2]);
+		   //alert("2");
+	
+	    db3.transaction(function (tx) {
+	
+	 tx.executeSql('CREATE TABLE IF NOT EXISTS hospital (id TEXT NOT NULL, city TEXT NOT NULL, hospital TEXT NOT NULL, address LOCATION NOT NULL, telephone TEXT NOT NULL, doctor TEXT NOT NULL)');
+     //alert(content_ID[2]+content_FN[2]+content_NA[2]+"1");
+	 
+	 tx.executeSql('SELECT id FROM hospital',[],function(tx, rs) {
+					//alert("000");
+                    count = rs.rows.length ;	
+		for(var iii=count;iii<=numRows-1;iii++)
+		{
+	 //alert("4567");
+			var SQL = 'INSERT INTO hospital(id,city,hospital,address,telephone,doctor) VALUES ("'+content_ID[iii]+'", "'+content_FN[iii]+
+	            '", "'+content_FA[iii]+'", "'+content_FI[iii]+'", "'+content_FW[iii]+'", "'+content_FU[iii]+'")';
+	 //alert("456");
+			//alert(content_ID[iii]);
+			tx.executeSql(SQL);
+		}
+                }
+                );
+	
+		});
+        });
+	 //alert("111");
+	 }
+     google.setOnLoadCallback(a);
+	 
+	 function createbtn(){
+				db.transaction(function(tx) {
+					sql = "select * from hospital";
+					tx.executeSql(sql, [], function(tx, result){
+					var Bstr = "<hr/>";
+						for (var i = 0; i < result.rows.length; i++) {
+							//alert(result.rows.length);
+							//result.rows.item(i).hospital,result.rows.item(i).address,result.rows.item(i).telephone
+							Bstr += "<a id='"+i+"' value='"+result.rows.item(i).address+"' href='#page2' data-theme='b' data-role='button' rel='external'  onClick='Address("+i+")'>"+result.rows.item(i).hospital+"</a><br>"
+							
+						}
+						document.getElementById("Display7s2").innerHTML = Bstr;
+					}, null);	
+				});		
+			}
+			
+	function Address(m){
+				var INS = $("#"+m).attr("value");
+				//var address ;
+				geocoder = new google.maps.Geocoder();
+				geocoder.geocode( {'address': INS}, function(results, status) {
+			//將geocoder回傳的資料中抽出座標的值，再填入input的欄位中
+			var lat = results[0].geometry.location.lat();
+			var lat1 = lat;
+			var lng = results[0].geometry.location.lng();
+			var lng1 = lng;
+			document.getElementById("Display7s").innerHTML = "<img src ='http://maps.googleapis.com/maps/api/staticmap?center="+INS+"&zoom=13&size=450x350&maptype=roadmap&markers=color:blue%7Clabel:A%7C"+lat1+","+lng1+"&sensor=false'>";
+			//alert(lat1+','+lng1);
+			//return lat1;
+			});
+			}		
+	</script>
+	<style type="text/css">
+.ui-page {
+    background: transparent url(back.jpg);
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+}
+			
+.ui-page{
+
+backface-visibility: hidden;
+
+-webkit-backface-visibility: hidden; /* Chrome and Safari */
+
+-moz-backface-visibility: hidden; /* Firefox */  }
+			table{
+				margin:0 0 0 0;
+				width:100%;
+			}
+			div img{
+				width:95%;	
+			}
+			div{
+			text-align: center;
+			}
+			#banner{				
+				align: center;
+				width:100%;				
+			}			
+		</style>
+</head> 
+<body> 
+
+<!-- Home -->
+<div data-role="page" id="page1"><!-- 首頁 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <a href="#page1" rel="external" abcde"home">Home</a>
+		<h1>自我檢測APP</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content">
+		<section>
+			<table align="center">
+				<tr>
+					<td>
+						<div class="links" name="main.html#page3">
+							<img src="picture/index/1.gif"/>
+						</div>
+					</td>
+					<td>
+						<div class="links" name="main.html#page7">
+							<img src="picture/index/2.gif"/>
+						</div>
+					</td>
+					<td>
+						<div class="links" name="recipe.html">
+							<img src="picture/index/3.gif"/>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="links" name="knowledge.html">
+							<img src="picture/index/4.gif"/>
+						</div>
+					</td>
+					<td>
+						<div class="links" name="mapmarker2.html">
+							<img src="picture/index/5.gif"/>
+						</div>
+					</td>
+					<td>
+						<div class="links" name="about.html">
+							<img src="picture/index/6.gif"/>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="links" name="unsafe.html">
+							<img src="picture/index/7.gif"/>
+						</div>
+					</td>
+					<td>
+						<div class="links" name="youtube.html">
+							<img src="picture/index/8.gif"/>
+						</div>
+					</td>
+					<td>
+						<div class="links" name="healthfood.html">
+							<img src="picture/index/9.gif"/>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</section>
+	</div>
+			
+    <div data-theme="b" data-role="footer" data-position="fixed">
+    </div><!-- /footer -->
+</div><!-- /page1 -->
+
+<div data-role="page" id="page3"><!-- 檢測首頁 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <a href="#page1" rel="external" abcde"home">Home</a>
+		<h1>自我檢測</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content">
+		<a class="links" name="diabetestest.html" data-role="button" data-theme="b">
+            糖尿病自我檢測
+        </a>
+        <a class="links" name="highbloodpressuretest.html" data-role="button" data-theme="b">
+            高血壓自我檢測
+        </a>
+        <a class="links" name="fattest.html" data-role="button" data-theme="b">
+            肥胖體質自我檢測
+        </a>
+        <a class="links" name="facetest.html" data-role="button" data-theme="b">
+            肌膚老化自我檢測
+        </a>
+    </div>
+    <div data-theme="b" data-role="footer" data-position="fixed">
+        <a href="#page7" data-transition="none" data-theme="" abcde"star">記錄查詢</a>
+    </div><!-- /footer -->
+</div><!-- /page3 -->
+
+
+<div data-role="page" id="page7"><!-- 記錄查詢 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <a href="#page1" rel="external" abcde"home">Home</a>
+		<h1>記錄查詢</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content" id="DisplayRES">
+		<script>showPoint()</script>
+        <script>//showRES()</script>
+    </div>
+    <div data-theme="b" data-role="footer" data-position="fixed"></div><!-- /footer -->
+</div><!-- /page7 -->
+
+<div data-role="page" id="page7s"><!-- 建議 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <a href="#page7" rel="external" abcde"home">上一頁</a>
+		<h1>建議</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content">
+        <section>
+			<table >
+				<tr>
+					<td>
+						<div data-role="controlgroup" data-type="horizontal" data-mini="true" align ="center">
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setRes()">測驗結果</a>
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setExers()">建議生活習慣</a>
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setFood()">建議飲食</a>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<table >
+				<tr>
+					<td colspan='3'>
+						<a id="Display7s" value="" class="" ></a>
+					</td>
+				</tr>
+				<tr>
+					<td colspan='3'>
+						<a id="Display7s2" value="" class="" ></a>
+					</td>
+				</tr>
+			</table>
+		</section>
+    </div>
+    <div data-theme="b" data-role="footer" data-position="fixed">
+    </div><!-- /footer -->
+</div><!-- /pageN -->
+
+
+<div data-role="page" id="pageN"><!-- 預留用 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <a href="#page1" rel="external" abcde"home">Home</a>
+		<h1>自我檢測APP</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content">
+        
+    </div>
+    <div data-theme="b" data-role="footer" data-position="fixed">
+		<div data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="#page3" data-transition="none" data-theme="" abcde"star">自我檢測</a></li>
+                <li><a href="#page7" data-transition="none" data-theme="" abcde"star">記錄查詢</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /footer -->
+</div><!-- /pageN -->
+
+<script>
+	$(".links").click(function(){
+				document.location.href = $(this).attr("name");
+	})
+		$(function(){
+				
+				document.addEventListener("deviceready", onDeviceReady, false);
+				
+			})
+		
+				function onDeviceReady() {
+					document.addEventListener("backbutton", onBackKeyDown, false);
+				//document.addEventListener("menubutton", onMenuKeyDown, false);
+				
+			}	
+		
+		
+		function onBackKeyDown() {
+				navigator.notification.confirm(
+					'確定要離開嗎?',  // message
+					onConfirm,            // callback function
+					'通知',               // title
+					'確定,取消'              // confirm 選項，用逗號隔開
+				);
+			}
+			// callback function
+			function onConfirm(button) {   
+				// if press 'Yes'
+				if (button === 1){
+					navigator.app.exitApp();
+				}
+			}
+</script>
+
+</body>
+</html>

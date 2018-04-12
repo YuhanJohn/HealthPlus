@@ -1,0 +1,677 @@
+<html>
+<head>
+<meta charset="utf-8">
+    <title>健康促進APP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/jquery.mobile-1.1.0.min.js"></script>
+	<style type="text/css">
+.ui-page {
+    background: transparent url(back.jpg);
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+
+
+}
+			
+		</style>
+<script language="JavaScript">
+$(document).bind("mobileinit", function(){    
+  $.extend(  $.mobile , {    
+   defaultPageTransition: 'none'    
+  });    
+}); 
+db = window.openDatabase("test_db", "1.0", "just for test",  2 * 1024 * 1024);
+
+	var Users = new Array(3)
+	Users[0] = ["自己",0]
+	Users[1] = ["媽媽",1]
+	Users[2] = ["爸爸",2]
+	
+	function showUsers(){
+		document.write("<select data-mini='true' data-theme='b' id='selectpeople' name='' ><option value='"+Users[0][1]+"'>"+Users[0][0]+"</option><option value='"+Users[1][1]+"'>"+Users[1][0]+"</option><option value='"+Users[2][1]+"'>"+Users[2][0]+"</option></select>");
+	}
+
+	function recordPoint(){
+		var TResult = document.getElementById("text-1").value; //分數
+		//var SP = document.getElementById("selectpeople").value;
+		var TTT = document.getElementById("selectpeople").value;
+		var SP  = Users[TTT][0];
+		var T   = document.getElementById("Ttime").value;
+		var A   = 2; 
+		
+		db.transaction(function(tx) {
+			/// Remember that the db.transaction function call is asynchronous, so it will return immediately but not necessarily call the callbacks.
+			
+			sql = "CREATE TABLE IF NOT EXISTS TEST_TABLE2 (DisID, TRfield, SPfield, Tfield)";
+			/// alert(sql);  	/// 偵錯時觀察用
+			tx.executeSql(sql, [], function(tx, results){
+				/// The above query will create a table called TEST_TABLE2 in 'SHM_DB' database(which is already created).
+				
+				sql = "INSERT INTO TEST_TABLE2 (DisID, TRfield, SPfield, Tfield) VALUES ('"+ A +"','" + TResult + "','" + SP + "','" + T + "')";
+				/// alert(sql);  	/// 偵錯時觀察用
+				tx.executeSql(sql, [], function(tx, results){
+					/// The above query will insert a record (TR, SP, T) into TEST_TABLE2.
+
+					sql = "SELECT * FROM TEST_TABLE2"; 
+					/// alert(sql);  	/// 偵錯時觀察用
+					tx.executeSql(sql, [], function(tx, results){
+						/// To read the last record by using a callback to capture the results as follows. 
+						
+						var len = results.rows.length;
+						/// alert(len); /// 偵錯時觀察用
+						var i = len - 1;
+						alert("分數" + results.rows.item(i).TRfield + ", 測驗人" + results.rows.item(i).SPfield + ", 記錄於" + results.rows.item(i).Tfield);
+
+						/// 完成記錄儲存後將[儲存此筆]按鈕予以disable
+						//document.getElementById("SubmitBMI").setAttribute("disabled","disabled");
+					}, null);
+
+				});
+			});
+		});
+	}
+	function reload(){
+			//alert(123);
+		$("input").val("");
+	}
+	
+	var Questions = new Array(7)
+	Questions[0] = ["Q1:常常三餐不規則，沒有定時定量，有時餓過頭或吃的太飽，常常兩餐當成一餐吃？","",3,2,1]
+	Questions[1] = ["Q2:喜歡吃精緻的加工食品、不喜歡吃青菜或纖維質含量較高的食物？","",3,2,1]
+	Questions[2] = ["Q3:喜歡長時間坐著看電視（電腦），而且一邊吃零食？","",3,2,1]
+	Questions[3] = ["Q4:喜歡吃脂肪含量較高的肥肉類、油炸食品和速食？","",3,2,1]
+	Questions[4] = ["Q5:三餐多數都是外食？或是口味都吃的比較重？","",3,2,1]
+	Questions[5] = ["Q6:常常到吃到飽餐廳用餐、或是吃飯常常吃的很飽？","",3,2,1]
+	Questions[6] = ["Q7:喜歡吃甜食、蛋糕、餅乾和高糖飲料（如可樂、汽水）？","",3,2,1]
+	Questions[7] = ["Q8:喜歡抽煙，甚至每天超過10根以上？","",3,2,1]
+	Questions[8] = ["Q9:喜歡喝酒，常常不知覺就喝的比較多？","",3,2,1]
+	Questions[9] = ["Q10:經常熬夜晚睡、睡眠不足八個小時？","",3,2,1]
+	Questions[10] = ["Q11:容易心煩氣躁、累積壓力而不適當抒發？","",3,2,1]
+	Questions[11] = ["Q12:常常情緒緊張、壓力過大？","",3,2,1]
+	Questions[12] = ["Q13:不喜歡運動，每週的運動量不足一個小時？","",3,2,1]
+	Questions[13] = ["Q14:上班的時候常常坐下來就很少走動？","",3,2,1]
+	Questions[14] = ["Q15:上班的時候即使是短距離也以車代步，不喜歡走路？","",3,2,1]
+	Questions[15] = ["Q16:常常莫名的頭痛頭暈？","",7,5,3]
+	Questions[16] = ["Q17:常常肩膀酸痛、手腳麻木、容易有倦怠感？","",7,5,3]
+	Questions[17] = ["Q18:容易飢餓，食量變大，體重卻下降？","",7,5,3]
+	Questions[18] = ["Q19:容易口渴，喝很多水，尿量也增加？","",7,5,3]
+	Questions[19] = ["Q20:常常感覺心悸、胸部有壓迫感？","",7,5,3]
+	Questions[20] = ["Q21:你/妳的腰圍超過標準？男性腰圍大於等於90cm(35吋)；女性腰圍大於等於80cm(31吋)？","",10,5]
+	Questions[21] = ["Q22:身體質量指數（BMI）大於27？","",10,5]
+	
+var countQ = 0;	
+function showQues(){
+	//document.write(count);
+	var j = countQ+1 ;
+	document.write("<p align='right'>題數:"+j+"/"+Questions.length+"</p>");
+	document.write("<p align='center'>"+Questions[countQ][0]+"</br>"+"</p>");
+	countQ++;
+	//document.getElementById('1').outerHTML = Questions[0];
+	//document.write(123);
+}
+//題數:2/10
+/*
+<a href="#Q2" data-role="button" data-theme="b" data-inline="true" value="3" data-transition="flow">經常這樣</a>
+<a href="#Q2" data-role="button" data-theme="b" data-inline="true" value="2" data-transition="flip">偶而這樣</a>
+<a href="#Q2" data-role="button" data-theme="c" data-inline="true" value="1" data-transition="flow">很少這樣</a>
+*/
+var countB = 0;
+function showBtns(){
+var b = countB+2 ;
+if(countB+1 < Questions.length && Questions[countB].length == 5){
+	document.write("<p align='center' ><a href='#Q"+b+"' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][2]+"' data-transition='flow'>經常這樣</a>");
+	document.write("<a href='#Q"+b+"' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][3]+"' data-transition='flip'>偶而這樣</a>");
+	document.write("<a href='#Q"+b+"' data-role='button' data-theme='c' data-inline='true' value='"+Questions[countB][4]+"' data-transition='flow'>很少這樣</a></p>");
+}else if(countB+1 < Questions.length && Questions[countB].length == 4){
+	document.write("<p align='center' ><a href='#Q"+b+"' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][2]+"' data-transition='flow'>無</a>");
+	document.write("<a href='#Q"+b+"' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][3]+"' data-transition='flip'>有</a></p>");
+}else if(countB+1 == Questions.length && Questions[countB].length == 5){
+	document.write("<p align='center' ><a href='#Result' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][2]+"' data-transition='flow'>經常這樣</a>");
+	document.write("<a href='#Result' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][3]+"' data-transition='flip'>偶而這樣</a></p>");
+	document.write("<a href='#Result' data-role='button' data-theme='c' data-inline='true' value='"+Questions[countB][4]+"' data-transition='flow'>很少這樣</a></p>");
+}else if(countB+1 == Questions.length && Questions[countB].length == 4){
+	document.write("<p align='center' ><a href='#Result' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][2]+"' data-transition='flow'>無</a>");
+	document.write("<a href='#Result' data-role='button' data-theme='b' data-inline='true' value='"+Questions[countB][3]+"' data-transition='flip'>有</a></p>");
+}
+
+
+countB++;
+}
+
+function showScos(){
+document.write("<form align='center'><label for='text-1'>score:</label><input type='mini-text' name='text-1' id='text-1' disabled></form>");
+}
+
+var countP = 0;
+function showPics(){
+document.write("<p align='center'><img src = 'picture/diabetes/"+Questions[countP][1]+"' height = 345 width = 310></p>");
+countP++;
+}
+	function setRes(){
+		var sres = document.getElementById("text-1").value;
+		if(sres>=75){
+			document.getElementById("test222").innerHTML = "您要注意囉！！您可能是糖尿病高血壓的高危險群喔！建議您趕快與專業的醫生諮詢，並定時量測血糖血壓，確認您目前的血糖血壓是不是已經偏高了？ 如果經由醫生確認您已經屬於糖尿病高血壓的前期，建議您應聽從醫師的指示和建議，將您的生活型態、飲食習慣和運動習慣好好進行調整，並諮詢醫生是否需要配合用藥，趕快將您的血糖血壓控制在正常的範圍，並養成定時量測血糖血壓的習慣，瞭解您的調整和用藥是否能夠幫助您控制血糖血壓，做好糖尿病與高血壓的健康管理。" ;
+		}else if(sres>=50&&sres<=74){
+			document.getElementById("test222").innerHTML = "您要趕快瞭解您的血糖血壓狀況囉！因為您現在的生活型態有點危險呢！也要開始注意您的身體最近是不是有發出平常沒有的警訊？當然建議您可以向專業的醫師諮詢，並且定時量測血糖血壓，確認血糖血壓的數值是不是屬於正常的範圍。 如果您的血糖血壓數值已經有點偏高了，您也可以請醫生給您生活、飲食、運動上的建議，將您的生活型態、飲食習慣和運動程度調整一下，並且維持量測血糖血壓的習慣和頻率，確保透過生活、飲食和運動習慣的調整，能夠讓您的血糖血壓維持在正常的範圍，回到身體正常健康的狀態。";	
+		}else if(sres< 50){
+			document.getElementById("test222").innerHTML = "恭喜您！您目前的生活型態保持的還不錯喔！身體應該也是很不錯吧～要好好維持這樣良好的生活型態，建議您也可以定期量測一下自己的血糖血壓，確保身體狀況良好喔！";
+		}else{
+			document.getElementById("test222").innerHTML = "無資料";
+		}
+	}
+	
+	function setDoc(){
+		var sres = document.getElementById("text-1").value;
+		if(sres>=75){
+			document.getElementById("test222").innerHTML = "111" ;
+		}else if(sres>=50&&sres<=74){
+			document.getElementById("test222").innerHTML = "222";	
+		}else if(sres< 50){
+			document.getElementById("test222").innerHTML = "333";
+		}else{
+			document.getElementById("test222").innerHTML = "無資料";
+		}
+	}
+	
+	function setFood(){
+		var sres = document.getElementById("text-1").value;
+		if(sres>=75){
+			document.getElementById("test222").innerHTML = "多吃苦瓜、胡蘿蔔，避免高糖分、高熱量以及高鹽分的食品。" ;
+		}else if(sres>=50&&sres<=74){
+			document.getElementById("test222").innerHTML = "多吃洋蔥、菠菜、胡蘿蔔，避免高糖分、高熱量以及高鹽分的食品。";	
+		}else if(sres< 50){
+			document.getElementById("test222").innerHTML = "繼續保持現在的飲食習慣喔!!!";
+		}else{
+			document.getElementById("test222").innerHTML = "無資料";
+		}
+	}
+	
+	function setExers(){
+		var sres = document.getElementById("text-1").value;
+		if(sres>=75){
+			document.getElementById("test222").innerHTML = "積極培養運動習慣，建議從簡單的慢跑、健走開始，並改善不良的生活習慣。" ;
+		}else if(sres>=50&&sres<=74){
+			document.getElementById("test222").innerHTML = "養成良好的運動習慣並持續下去，每週三次運動並持續30分鐘且心跳每分鐘100下以上，生活習慣維持下去即可";	
+		}else if(sres< 50){
+			document.getElementById("test222").innerHTML = "保持現在的生活及運動習慣!!!";
+		}else{
+			document.getElementById("test222").innerHTML = "無資料";
+		}
+	}
+//<a href="#page1" rel="external" abcde"home">Home</a>
+</script>
+</head>
+<body>
+
+<div data-role="page" id="Q1">	
+<div data-theme="b" data-role="header" data-position="fixed">
+<a class="links" name="index.html#page3" rel="external" abcde"home">回題庫</a>
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+<div data-role="page" id="Q2">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+<div data-role="page" id="Q3">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q4">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q5">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q6">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q7">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q8">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q9">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+
+<div data-role="page" id="Q10">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q11">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+<div data-role="page" id="Q12">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q13">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+<div data-role="page" id="Q14">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q15">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+
+<div data-role="page" id="Q16">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q17">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q18">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+
+<div data-role="page" id="Q19">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+
+<div data-role="page" id="Q20">
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+
+<div data-role="page" id="Q21">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+<div data-role="page" id="Q22">	
+<div data-theme="b" data-role="header" data-position="fixed">
+	<h1>高血壓自我檢測</h1>
+</div><!-- /header -->
+<div data-role="content">
+<script>
+showQues()
+showBtns()
+showScos()
+//showPics()
+</script>
+</div>
+</div>
+
+
+
+<script language="javascript">
+var count = 0;
+$("a").click(function () {
+     var attr = Number($(this).attr("value"))+Number($("input").val());
+	  //Number 強制轉型成數字，$("textarea").val()抓取textbox值
+      $("input").val(attr);
+	  count++;
+    setRes();
+	});
+	
+	
+</script>
+
+<div data-role="page" id="Save"><!-- 儲存 -->
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <a href="#page1" rel="external" abcde"home">Home</a>
+		<h1>自我檢測APP</h1>
+    </div><!-- /header -->
+	
+    <div data-role="content">
+        <section>
+			<table align="center">
+				<tr>
+					<td>
+						<p align="center">檢測結果</p>	
+						<form align="center">
+							<label for="text-1">score:</label>
+							<input type="mini-text" name="text-1" id="text-1" disabled>
+						</form>
+					</td>
+				</tr>
+			</table>
+			<table align="center">
+				<tr>
+					<td>
+						<label>測驗人:</label>
+						<script>showUsers()</script><!-- /users -->	
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div data-role="fieldcontain">
+							<p id="TEST"></p>
+							<label for="Ttime">測驗時間：</label>
+							<input type="datetime-local" 
+							+66name="Ttime" id="Ttime" />
+							<script>document.getElementById("Ttime").value = new Date();</script> <!-- 將此輸入值設定為現在時間 -->
+						</div><!-- /time -->
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">
+							<a href="" data-role="button" data-theme="b" data-inline="true" data-transition="flip" onClick="recordPoint();">儲存</a>
+						</p>
+					</td>
+				</tr>
+			</table>
+		</section>
+    </div>
+	
+    <div data-theme="b" data-role="footer" data-position="fixed">
+		<div data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="index.html#page3" data-transition="none" data-theme="" abcde"star">自我檢測</a></li>
+                <li><a href="index.html#page7" data-transition="none" data-theme="" abcde"star">記錄查詢</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /footer -->
+</div><!-- /Save -->
+
+
+<div data-role="page" id="Result">	
+	<div data-theme="b" data-role="header" data-position="fixed">
+		<h1>高血壓自我檢測</h1>
+	</div><!-- /header -->
+	
+	<div data-role="content">
+	<section>
+			<table align="center">
+				<tr>
+					<td>
+						<p align="center">檢測結果</p>	
+						<form align="center">
+							<label for="text-1">score:</label>
+							<input type="mini-text" name="text-1" id="text-1">
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div data-role="controlgroup" data-type="horizontal" data-mini="true">
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setRes()">測驗結果</a>
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setExers()">建議生活習慣</a>
+							<a href="#" data-role="button" data-iconpos="bottom" abcde"Check" data-theme="b" onclick="setFood()">建議飲食</a>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<table align="center">
+				<tr>
+					<td colspan='3'>
+						<div id="test222"></div>
+					</td>
+				</tr>
+			</table>
+			<table align="center">
+				<tr>
+					<td>
+						<p align="center">
+							<a href="#Save" data-role="button" data-theme="b" data-inline="true" data-transition="flip" onClick="">儲存結果</a>
+							<a href="#Q1" data-role="button" data-theme="b" data-inline="true" data-transition="flip" onClick="reload();">再測一次</a>
+						</p>
+					</td>
+				</tr>
+			</table>
+		</section>
+	</div><!--content-->
+	
+	<div data-theme="b" data-role="footer" data-position="fixed">
+		<div data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a class="links" name="index.html#page3" data-transition="none" data-theme="" abcde"star">自我檢測</a></li>
+                <li><a class="links" name="index.html" data-transition="none" data-theme="" abcde"home">回首頁</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /footer -->
+	
+</div><!--result-->
+
+<script>
+	$("a.links").click(function(){
+		document.location.href = $(this).attr("name");
+	})
+</script>
+</body>
+</html>
